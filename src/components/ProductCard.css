@@ -1,0 +1,70 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; 
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #e5e5e5;
+  height: 380px; /* SAME HEIGHT FOR ALL CARDS */
+  background: #fff;
+}
+
+.product-img {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+
+.product-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  flex-grow: 1; /* NAME GETS EXTRA SPACE */
+  margin: 10px 0;
+}
+
+/* FIXED BOTTOM AREA */
+.bottom-section {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* PRICES */
+.offer-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #222;
+}
+
+.price {
+  font-size: 14px;
+  color: #666;
+}
+
+.actual-price {
+  text-decoration: line-through;
+}
+
+.discount {
+  color: #ff0000;
+  font-weight: 600;
+  margin-left: 5px;
+}
+
+/* BUTTON */
+.btn {
+  margin-top: 5px;
+  padding: 8px;
+  background: black;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.btn:hover {
+  background: #444;
+}
