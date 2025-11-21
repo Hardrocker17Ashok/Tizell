@@ -57,12 +57,20 @@ html, body {
 }
 
 /* Section Title */
-.section-title {
-  padding-left: 20px;
-  margin-top: 20px;
-  font-size: 22px;
+.product-title {
+  font-size: 15px;
   font-weight: 600;
+  color: #333;
+  margin-top: 10px;
+
+  /* LIMIT TEXT TO 2 LINES ONLY */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;       /* SHOW ONLY 2 LINES */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;      /* SHOW "..." at end */
 }
+
 
 /* Product Grid */
 .product-grid {
