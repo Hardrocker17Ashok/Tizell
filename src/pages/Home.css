@@ -79,17 +79,16 @@ html, body {
   }
 }
 
-/* Mobile */
 @media (max-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr); /* Mobile: 2 items */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Small Mobile */
-@media (max-width: 480px) {
+/* VERY SMALL PHONE (Optional) */
+@media (max-width: 360px) {
   .product-grid {
-    grid-template-columns: repeat(1, 1fr); /* Very small mobile: 1 item */
+    grid-template-columns: repeat(2, 1fr); /* still 2 items */
   }
 }
 
