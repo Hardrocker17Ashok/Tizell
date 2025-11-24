@@ -1,59 +1,89 @@
-import { useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 const ProductDetails = () => {
-  const { id } = useParams();
-  const [product, setProduct] = useState(null);
+  const { state } = useLocation();
+  const product = state?.product;
 
-  // For now, a sample local data (later we will fetch from Firebase)
-  const sample = [
-    {
-      id: 1,
-      name: "iPhone 15",
-      price: 79999,
-      description: "Latest iPhone with A17 chip and stunning camera.",
-      image:
-        "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/iphone-15-pro-max-finish-select-202309-6_5g?wid=512&hei=512&fmt=jpeg&qlt=90&.v=1692999428152",
-    },
-    {
-      id: 2,
-      name: "Samsung S23",
-      price: 69999,
-      description: "Premium Samsung flagship with Snapdragon processor.",
-      image:
-        "https://images.samsung.com/is/image/samsung/p6pim/in/sm-s911bzkdins/gallery/in-galaxy-s23-s911-412669-sm-s911bzkdins-thumb-534759329?$216_216_PNG$",
-    },
-  ];
+  if (!product) {
+    return <h2 style={{ padding: "20px" }}>Product not found.</h2>;
+  }
 
-  useEffect(() => {
-    const found = sample.find((item) => item.id == id);
-    setProduct(found);
-  }, [id]);
+  // 🔥 ADD TO CART FUNCTION
+  const addToCart = async () => {
+    try {
+      await addDoc(collection(db, "cart"), {
+        ...product,
+        quantity: 1,
+        addedAt: Date.now(),
+      });
 
-  if (!product) return <h2 style={{ padding: 20 }}>Loading...</h2>;
+      alert("Product added to cart!");
+    } catch (error) {
+      console.error("Cart error:", error);
+      alert("Something went wrong.");
+    }
+  };
 
   return (
-    <div className="product-details">
-      <img src={product.image} className="details-img" />
+    <div style={{ padding: "20px" }}>
+      
+      {/* Product Image */}
+      <img
+        src={product.image}
+        alt={product.name}
+        style={{
+          width: "280px",
+          height: "280px",
+          objectFit: "contain",
+          borderRadius: "8px",
+        }}
+      />
 
-      <div className="details-content">
-        <h2>{product.name}</h2>
-        <p>Price: ₹{product.price}</p>
+      {/* Product Name */}
+      <h1 style={{ marginTop: "20px", fontSize: "24px", fontWeight: "bold" }}>
+        {product.name}
+      </h1>
 
-        <p style={{ marginTop: 10 }}>{product.description}</p>
+      {/* Offer Price */}
+      <h2 style={{ color: "green", marginTop: "10px" }}>
+        ₹ {product.offerPrice}
+      </h2>
 
-        <button
-          className="add-btn"
-          onClick={() => {
-            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-            cart.push(product);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            alert("Added to Cart!");
-          }}
-        >
-          Add to Cart
-        </button>
-      </div>
+      {/* Original Price + Discount */}
+      <p style={{ marginTop: "5px" }}>
+        <span style={{ textDecoration: "line-through", color: "gray" }}>
+          ₹ {product.price}
+        </span>
+        &nbsp;&nbsp;
+        <span style={{ color: "red", fontWeight: "bold" }}>
+          {product.discountPercent}% OFF
+        </span>
+      </p>
+
+      {/* Description */}
+      <p style={{ marginTop: "20px", lineHeight: "1.6" }}>
+        {product.description}
+      </p>
+
+      {/* Add to Cart Button */}
+      <button
+        onClick={addToCart}
+        style={{
+          marginTop: "20px",
+          padding: "12px 25px",
+          background: "black",
+          color: "white",
+          fontSize: "16px",
+          borderRadius: "5px",
+          border: "none",
+          cursor: "pointer",
+        }}
+      >
+        Add to Cart
+      </button>
+
     </div>
   );
 };

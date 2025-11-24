@@ -1,79 +1,102 @@
 import { useEffect, useState } from "react";
+import { collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 const Cart = () => {
-  const [cart, setCart] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
 
+  // Fetch all cart items
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCart(saved);
+    const fetchCart = async () => {
+      const snap = await getDocs(collection(db, "cart"));
+      const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setCartItems(list);
+    };
+    fetchCart();
   }, []);
 
-  const removeItem = (index) => {
-    const updated = [...cart];
-    updated.splice(index, 1);
-    setCart(updated);
-    localStorage.setItem("cart", JSON.stringify(updated));
+  // Increase quantity
+  const increase = async (item) => {
+    await updateDoc(doc(db, "cart", item.id), {
+      quantity: item.quantity + 1,
+    });
+
+    item.quantity++;
+    setCartItems([...cartItems]);
   };
 
-  const total = cart.reduce((sum, item) => sum + item.price, 0);
+  // Decrease quantity
+  const decrease = async (item) => {
+    if (item.quantity === 1) return;
+
+    await updateDoc(doc(db, "cart", item.id), {
+      quantity: item.quantity - 1,
+    });
+
+    item.quantity--;
+    setCartItems([...cartItems]);
+  };
+
+  // Remove item
+  const removeItem = async (item) => {
+    await deleteDoc(doc(db, "cart", item.id));
+    setCartItems(cartItems.filter((i) => i.id !== item.id));
+  };
+
+  // Total price calculation
+  const total = cartItems.reduce(
+    (sum, item) => sum + item.offerPrice * item.quantity,
+    0
+  );
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>My Cart</h2>
+    <div style={{ padding: "20px" }}>
+      <h1>Your Cart</h1>
 
-      {cart.length === 0 ? (
-        <h3>Your cart is empty</h3>
-      ) : (
-        <>
-          {cart.map((item, i) => (
-            <div
-              key={i}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "20px",
-                marginBottom: "20px",
-                borderBottom: "1px solid #ddd",
-                paddingBottom: "10px",
-              }}
-            >
-              <img
-                src={item.image}
-                alt=""
-                style={{ width: "100px", height: "100px", objectFit: "contain" }}
-              />
-
-              <div style={{ flexGrow: 1 }}>
-                <h4>{item.name}</h4>
-                <p>₹ {item.price}</p>
-              </div>
-
-              <button
-                style={{
-                  padding: "6px 12px",
-                  background: "red",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "6px",
-                  cursor: "pointer",
-                }}
-                onClick={() => removeItem(i)}
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-
-          <h3>Total: ₹{total}</h3>
-
-          <button
-            className="add-btn"
-            onClick={() => (window.location.href = "/checkout")}
-          >
-            Proceed to Checkout
-          </button>
-        </>
+      {cartItems.length === 0 && (
+        <p>No items in cart.</p>
       )}
+
+      {cartItems.map((item) => (
+        <div
+          key={item.id}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "20px",
+            borderBottom: "1px solid #ccc",
+            paddingBottom: "15px",
+          }}
+        >
+          <img
+            src={item.image}
+            alt={item.name}
+            style={{ width: "120px", marginRight: "20px" }}
+          />
+
+          <div style={{ flex: 1 }}>
+            <h3>{item.name}</h3>
+            <p>₹ {item.offerPrice}</p>
+
+            {/* Quantity controls */}
+            <div>
+              <button onClick={() => decrease(item)}>-</button>
+              <span style={{ margin: "0 10px" }}>{item.quantity}</span>
+              <button onClick={() => increase(item)}>+</button>
+            </div>
+
+            <button
+              onClick={() => removeItem(item)}
+              style={{ marginTop: "10px", color: "red" }}
+            >
+              Remove
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {/* Total */}
+      <h2>Total: ₹ {total}</h2>
     </div>
   );
 };
