@@ -7,6 +7,7 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Orders from "./pages/Orders";
+import AddVariants from "./auto/AddVariants";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
 
       
     
+
+        <Route path="/add-variants" element={<AddVariants />} />
 
 
         <Route path="/" element={<Home />} />

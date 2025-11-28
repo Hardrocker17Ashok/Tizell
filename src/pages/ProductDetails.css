@@ -1,0 +1,184 @@
+/* MAIN WRAPPER */
+.pd-container {
+  display: flex;
+  gap: 30px;
+  padding: 30px;
+  max-width: 1300px;
+  margin: auto;
+  background: #fff;
+}
+
+/* LEFT IMAGE GALLERY */
+.pd-left {
+  flex: 1;
+}
+
+.pd-main-img {
+  width: 100%;
+  height: 380px;
+  object-fit: contain;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.pd-small-images {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.pd-small-images img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pd-small-images img.active-thumb {
+  border: 2px solid #ff9900;
+}
+
+/* CENTER DETAILS */
+.pd-center {
+  flex: 2;
+}
+
+.pd-title {
+  font-size: 26px;
+  font-weight: bold;
+}
+
+.pd-rating {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #f0a500;
+}
+
+.pd-review-count {
+  color: #555;
+}
+
+.pd-sub-title {
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* VARIANTS */
+.pd-variant-box {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.variant-item {
+  padding: 10px 16px;
+  border: 1px solid #777;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #f7f7f7;
+}
+
+.variant-item.active {
+  background: #ffeb9b;
+  font-weight: bold;
+  border-color: #e5a700;
+}
+
+/* PRICE */
+.pd-price-box {
+  margin-top: 20px;
+}
+
+.pd-price {
+  color: #008000;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.pd-mrp {
+  text-decoration: line-through;
+  color: #777;
+}
+
+.pd-discount {
+  color: #c40000;
+  font-weight: bold;
+}
+
+/* TECHNICAL TABLE */
+.pd-spec-table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.pd-spec-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.pd-spec-table td:first-child {
+  font-weight: bold;
+  background: #f6f6f6;
+}
+
+/* ABOUT SECTION */
+.pd-about {
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* RIGHT BUY BOX */
+.pd-right {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  background: #fff;
+}
+
+.pd-stock {
+  color: green;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.pd-delivery {
+  margin: 12px 0;
+}
+
+/* BUTTONS */
+.pd-add,
+.pd-buy {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 25px;
+  margin-top: 12px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.pd-add {
+  background: #ffd814;
+}
+
+.pd-buy {
+  background: #ffa41c;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .pd-container {
+    flex-direction: column;
+  }
+}

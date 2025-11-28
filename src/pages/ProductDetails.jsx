@@ -1,88 +1,148 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import "./ProductDetails.css";
 
 const ProductDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const product = state?.product;
 
-  if (!product) {
-    return <h2 style={{ padding: "20px" }}>Product not found.</h2>;
-  }
+  const [selectedVariant, setSelectedVariant] = useState(
+    product?.variants?.[0] || null
+  );
 
-  // ✅ ADD TO CART
+  const [mainImage, setMainImage] = useState(
+    product.image || product.image2 || product.image3
+  );
+
+  // 🔥 Open page from TOP
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  if (!product) return <h2 className="pd-error">Product not found.</h2>;
+
+  // ADD TO CART
   const addToCart = async () => {
-    if (!auth.currentUser) {
-      navigate("/login");   // ✅ direct redirect
-      return;
-    }
+    if (!auth.currentUser) return navigate("/login");
 
     try {
       await addDoc(collection(db, "cart"), {
         userId: auth.currentUser.uid,
-        product: product,
+        productId: product.id,
+        productName: product.name,
+        variant: selectedVariant,
+        offerPrice: selectedVariant.offerPrice,
+        price: selectedVariant.price,
         quantity: 1,
+        image: product.image,
         addedAt: Date.now(),
       });
-
-      alert("Added to cart!");
+      alert("Added to cart");
     } catch (error) {
       console.error(error);
-      alert("Error adding to cart");
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <img
-        src={product.image}
-        alt={product.name}
-        style={{
-          width: "280px",
-          height: "280px",
-          objectFit: "contain",
-          borderRadius: "8px",
-        }}
-      />
+    <div className="pd-container">
 
-      <h1 style={{ marginTop: "20px", fontSize: "24px", fontWeight: "bold" }}>
-        {product.name}
-      </h1>
+      {/* LEFT IMAGES */}
+      <div className="pd-left">
+        <img src={mainImage} className="pd-main-img" alt={product.name} />
 
-      <h2 style={{ color: "green", marginTop: "10px" }}>
-        ₹ {product.offerPrice}
-      </h2>
+        <div className="pd-small-images">
+          {[product.image, product.image2, product.image3, product.image4, product.image5]
+            .filter(Boolean)
+            .map((img, i) => (
+              <img 
+                key={i} 
+                src={img} 
+                onClick={() => setMainImage(img)} 
+                className={mainImage === img ? "active-thumb" : ""}
+                alt="thumb" 
+              />
+            ))}
+        </div>
+      </div>
 
-      <p style={{ marginTop: "5px" }}>
-        <span style={{ textDecoration: "line-through", color: "gray" }}>
-          ₹ {product.price}
-        </span>
-        &nbsp;&nbsp;
-        <span style={{ color: "red", fontWeight: "bold" }}>
-          {product.discountPercent}% OFF
-        </span>
-      </p>
+      {/* CENTER DETAILS */}
+      <div className="pd-center">
+        <h2 className="pd-title">{product.name}</h2>
 
-      <p style={{ marginTop: "20px", lineHeight: "1.6" }}>
-        {product.description}
-      </p>
+        {/* ⭐ RATING */}
+        <div className="pd-rating">
+          ⭐⭐⭐⭐ <span className="pd-review-count">(210 ratings)</span>
+        </div>
 
-      <button
-        onClick={addToCart}
-        style={{
-          marginTop: "20px",
-          padding: "12px 25px",
-          background: "black",
-          color: "white",
-          fontSize: "16px",
-          borderRadius: "5px",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        Add to Cart
-      </button>
+        {/* VARIANTS */}
+        <h3 className="pd-sub-title">Choose Variant</h3>
+        <div className="pd-variant-box">
+          {product.variants?.map((v, i) => (
+            <div
+              key={i}
+              className={`variant-item ${
+                selectedVariant?.label === v.label ? "active" : ""
+              }`}
+              onClick={() => setSelectedVariant(v)}
+            >
+              {v.label}
+            </div>
+          ))}
+        </div>
+
+        {/* PRICE */}
+        <div className="pd-price-box">
+          <h1 className="pd-price">₹{selectedVariant?.offerPrice}</h1>
+          <p className="pd-mrp">M.R.P: ₹{selectedVariant?.price}</p>
+          <p className="pd-discount">{selectedVariant?.discount}% OFF</p>
+        </div>
+
+        {/* TECHNICAL DETAILS */}
+        <h3 className="pd-sub-title">Technical Details</h3>
+
+        <table className="pd-spec-table">
+          <tbody>
+            <tr><td>Brand</td><td>{product.specs?.brand}</td></tr>
+            <tr><td>Material</td><td>{product.specs?.material}</td></tr>
+            <tr><td>Colour</td><td>{product.specs?.color}</td></tr>
+            <tr><td>Dimensions</td><td>{product.specs?.dimensions}</td></tr>
+            <tr><td>Weight</td><td>{product.specs?.weight}</td></tr>
+            <tr><td>Outside Diameter</td><td>{product.specs?.outerDiameter}</td></tr>
+            <tr><td>Item Length</td><td>{product.specs?.length}</td></tr>
+            <tr><td>Manufacturer</td><td>{product.specs?.manufacturer}</td></tr>
+          </tbody>
+        </table>
+
+        {/* ABOUT SECTION */}
+        <h3 className="pd-sub-title">About this item</h3>
+        <ul className="pd-about">
+          {product.about
+            ?.split("\n")
+            .filter((line) => line.trim() !== "")
+            .map((line, i) => (
+              <li key={i}>{line}</li>
+            ))}
+        </ul>
+      </div>
+
+      {/* RIGHT BUY BOX */}
+      <div className="pd-right">
+        <p className="pd-stock">In Stock</p>
+
+        <div className="pd-delivery">
+          <p>🚚 Free Delivery Tomorrow</p>
+          <p>📍 Delivered to your location</p>
+        </div>
+
+        <button className="pd-add" onClick={addToCart}>
+          Add to Cart
+        </button>
+
+        <button className="pd-buy">Buy Now</button>
+      </div>
     </div>
   );
 };

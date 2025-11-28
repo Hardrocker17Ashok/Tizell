@@ -1,45 +1,63 @@
 import { useEffect, useState } from "react";
-import { collection,query,where, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import {auth, db } from "../firebase";
+import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
 
-  // ✅ Fetch cart items correctly
   useEffect(() => {
-  const fetchCart = async () => {
-    if (!auth.currentUser) return;
+    const fetchCart = async () => {
+      if (!auth.currentUser) return;
 
-    const q = query(
-      collection(db, "cart"),
-      where("userId", "==", auth.currentUser.uid)   // ✅ filter by user
+      const q = query(
+        collection(db, "cart"),
+        where("userId", "==", auth.currentUser.uid)
+      );
+
+      const snap = await getDocs(q);
+      const list = snap.docs.map((d) => ({
+        cartId: d.id,
+        ...d.data(),
+      }));
+
+      setCartItems(list);
+    };
+
+    fetchCart();
+  }, []);
+
+  // 🔥 SAFE PRICE HANDLER (NO MORE ERRORS)
+  const getOfferPrice = (item) => {
+    return (
+      item.variant?.offerPrice ||
+      item.product?.offerPrice ||
+      item.offerPrice ||
+      0
     );
-
-    const snap = await getDocs(q);
-    const list = snap.docs.map((d) => ({
-      cartId: d.id,
-      ...d.data(),
-    }));
-
-    setCartItems(list);
   };
 
-  fetchCart();
-}, []);
+  const getMRP = (item) => {
+    return (
+      item.variant?.price ||
+      item.product?.price ||
+      item.price ||
+      0
+    );
+  };
 
-  // ✅ Increase quantity
+  // 🔥 Increase
   const increase = async (item) => {
     await updateDoc(doc(db, "cart", item.cartId), {
-      quantity: item.quantity + 1,
+      quantity: (item.quantity || 1) + 1,
     });
 
-    item.quantity++;
+    item.quantity = (item.quantity || 1) + 1;
     setCartItems([...cartItems]);
   };
 
-  // ✅ Decrease quantity
+  // 🔥 Decrease
   const decrease = async (item) => {
-    if (item.quantity === 1) return;
+    if ((item.quantity || 1) === 1) return;
 
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity - 1,
@@ -49,15 +67,15 @@ const Cart = () => {
     setCartItems([...cartItems]);
   };
 
-  // ✅ Remove item
+  // 🔥 Remove
   const removeItem = async (item) => {
     await deleteDoc(doc(db, "cart", item.cartId));
     setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
   };
 
-  // ✅ Total price
+  // 🔥 Total
   const total = cartItems.reduce(
-    (sum, item) => sum + item.product.offerPrice * item.quantity,
+    (sum, item) => sum + getOfferPrice(item) * (item.quantity || 1),
     0
   );
 
@@ -79,14 +97,22 @@ const Cart = () => {
           }}
         >
           <img
-            src={item.product.image}
-            alt={item.product.name}
+            src={item.product?.image || item.image}
+            alt=""
             style={{ width: "120px", marginRight: "20px" }}
           />
 
           <div style={{ flex: 1 }}>
-            <h3>{item.product.name}</h3>
-            <p>₹ {item.product.offerPrice}</p>
+            <h3>{item.product?.name}</h3>
+
+            <p>Variant: <b>{item.variant?.label || "Default"}</b></p>
+
+            <p>
+              Price: <b>₹{getOfferPrice(item)}</b>&nbsp;
+              <span style={{ textDecoration: "line-through", color: "#777" }}>
+                ₹{getMRP(item)}
+              </span>
+            </p>
 
             <div>
               <button onClick={() => decrease(item)}>-</button>
@@ -106,23 +132,21 @@ const Cart = () => {
 
       <h2>Total: ₹ {total}</h2>
 
-{/* ✅ Checkout Button */}
-<button
-  onClick={() => (window.location.href = "/checkout")}
-  style={{
-    marginTop: "20px",
-    padding: "12px 20px",
-    background: "green",
-    color: "white",
-    fontSize: "16px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-  }}
->
-  Proceed to Checkout
-</button>
-
+      <button
+        onClick={() => (window.location.href = "/checkout")}
+        style={{
+          marginTop: "20px",
+          padding: "12px 20px",
+          background: "green",
+          color: "white",
+          fontSize: "16px",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Proceed to Checkout
+      </button>
     </div>
   );
 };
