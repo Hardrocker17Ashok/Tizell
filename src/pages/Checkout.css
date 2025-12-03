@@ -29,21 +29,6 @@
   margin-bottom: 15px;
 }
 
-.summary-item {
-  display: flex;
-  align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #eee;
-}
-
-.summary-item img {
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
-  margin-right: 15px;
-  border-radius: 8px;
-}
 
 .total-bar {
   display: flex;
@@ -51,6 +36,27 @@
   padding-top: 15px;
   font-size: 22px;
   font-weight: bold;
+}
+
+
+
+
+/* ADD MORE BUTTON */
+.add-more-btn {
+  margin-top: 20px;
+  padding: 12px;
+  width: 100%;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-more-btn:hover {
+  background: #ffcc00;
+  color: black;
 }
 
 /* ✅ BILLING FORM */
@@ -72,7 +78,7 @@
   font-size: 16px;
 }
 
-/* ✅ BUTTON */
+/* PLACE ORDER BUTTON */
 .place-btn {
   width: 100%;
   margin-top: 25px;
@@ -91,9 +97,92 @@
   color: black;
 }
 
-/* ✅ MOBILE */
+/* MOBILE */
 @media (max-width: 768px) {
   .checkout-wrapper {
     flex-direction: column;
   }
+}
+
+.sum-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sum-variant,
+.sum-price {
+  font-size: 14px;
+}
+
+.qty-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.qty-btn {
+  padding: 4px 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  background: #eee;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.qty-num {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+
+
+
+
+
+.summary-item {
+  display: flex;
+  align-items: center;       /* perfect vertical alignment */
+  justify-content: space-between; /* image left, remove right */
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+  gap: 15px;
+}
+
+/* Image column */
+.summary-item img {
+  width: 75px;
+  height: 75px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* Middle column takes full width */
+.sum-info {
+  flex: 1;                 /* expand middle section */
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Remove button column */
+.remove-col {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;          /* fixed width so alignment stable */
+}
+
+.sum-remove-btn {
+  background: none;
+  border: none;
+  color: #ff3333;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sum-remove-btn:hover {
+  text-decoration: underline;
 }

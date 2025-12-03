@@ -1,0 +1,56 @@
+.os-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+}
+
+.os-box {
+  text-align: center;
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  max-width: 420px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.os-img {
+  width: 120px;
+  margin-bottom: 20px;
+}
+
+.os-msg {
+  margin: 10px 0 20px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.os-btn {
+  width: 100%;
+  padding: 14px;
+  background: #111;
+  color: #fff;
+  font-size: 17px;
+  border: none;
+  border-radius: 7px;
+  margin-bottom: 12px;
+  cursor: pointer;
+}
+
+.os-btn:hover {
+  background: #ff9900;
+  color: #000;
+}
+
+.os-back {
+  width: 100%;
+  padding: 12px;
+  background: #eee;
+  font-size: 16px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.os-back:hover {
+  background: #ddd;
+}

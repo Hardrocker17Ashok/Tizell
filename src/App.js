@@ -8,6 +8,10 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Orders from "./pages/Orders";
 import AddVariants from "./auto/AddVariants";
+import OrderDetails from "./pages/OrderDetails";
+import Payment from "./pages/Payment";
+import OrderSuccess from "./pages/OrderSuccess";
+
 
 function App() {
   return (
@@ -20,6 +24,10 @@ function App() {
     
 
         <Route path="/add-variants" element={<AddVariants />} />
+
+        <Route path="/order/:id" element={<OrderDetails />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/order-success" element={<OrderSuccess />} />
 
 
         <Route path="/" element={<Home />} />

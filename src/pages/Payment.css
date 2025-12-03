@@ -1,0 +1,77 @@
+.pay-container {
+  max-width: 700px;
+  margin: auto;
+  padding: 25px;
+}
+
+.pay-title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.pay-box {
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.pay-option {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pay-option.selected {
+  border-color: #ff9900;
+  background: #fff7e6;
+}
+
+.pay-option input {
+  width: 18px;
+  height: 18px;
+}
+
+.disabled-tag {
+  margin-left: auto;
+  padding: 4px 8px;
+  background: #d9534f;
+  color: white;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.summary {
+  margin-top: 25px;
+  padding: 15px;
+  border-top: 1px solid #ddd;
+}
+
+.summary h3 {
+  margin-bottom: 5px;
+}
+
+.pay-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 20px;
+  font-size: 18px;
+  background: #111;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pay-btn:hover {
+  background: #ff9900;
+  color: black;
+}

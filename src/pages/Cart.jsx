@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
-import { collection, query, where, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc
+} from "firebase/firestore";
 import { auth, db } from "../firebase";
+import "./Cart.css";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
 
+  // FETCH CART ITEMS
   useEffect(() => {
     const fetchCart = async () => {
       if (!auth.currentUser) return;
@@ -26,127 +38,101 @@ const Cart = () => {
     fetchCart();
   }, []);
 
-  // 🔥 SAFE PRICE HANDLER (NO MORE ERRORS)
-  const getOfferPrice = (item) => {
-    return (
-      item.variant?.offerPrice ||
-      item.product?.offerPrice ||
-      item.offerPrice ||
-      0
-    );
-  };
+  // SAFE PRICE HANDLER
+  const getOfferPrice = (item) =>
+    item.variant?.offerPrice || item.product?.offerPrice || item.offerPrice || 0;
 
-  const getMRP = (item) => {
-    return (
-      item.variant?.price ||
-      item.product?.price ||
-      item.price ||
-      0
-    );
-  };
+  const getMRP = (item) =>
+    item.variant?.price || item.product?.price || item.price || 0;
 
-  // 🔥 Increase
+  // INCREASE QTY
   const increase = async (item) => {
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: (item.quantity || 1) + 1,
     });
-
     item.quantity = (item.quantity || 1) + 1;
     setCartItems([...cartItems]);
   };
 
-  // 🔥 Decrease
+  // DECREASE QTY
   const decrease = async (item) => {
     if ((item.quantity || 1) === 1) return;
 
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity - 1,
     });
-
     item.quantity--;
     setCartItems([...cartItems]);
   };
 
-  // 🔥 Remove
+  // REMOVE ITEM
   const removeItem = async (item) => {
     await deleteDoc(doc(db, "cart", item.cartId));
     setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
   };
 
-  // 🔥 Total
+  // TOTAL
   const total = cartItems.reduce(
     (sum, item) => sum + getOfferPrice(item) * (item.quantity || 1),
     0
   );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Your Cart</h1>
+    <div className="cart-page">
 
-      {cartItems.length === 0 && <p>No items in cart.</p>}
+      {/* LEFT – CART ITEMS */}
+      <div className="cart-left">
+        <h2 className="cart-title">Shopping Cart</h2>
 
-      {cartItems.map((item) => (
-        <div
-          key={item.cartId}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginBottom: "20px",
-            borderBottom: "1px solid #ccc",
-            paddingBottom: "15px",
-          }}
-        >
-          <img
-            src={item.product?.image || item.image}
-            alt=""
-            style={{ width: "120px", marginRight: "20px" }}
-          />
+        {cartItems.length === 0 && <p>Your cart is empty.</p>}
 
-          <div style={{ flex: 1 }}>
-            <h3>{item.product?.name}</h3>
+        {cartItems.map((item) => (
+          <div className="cart-item" key={item.cartId}>
 
-            <p>Variant: <b>{item.variant?.label || "Default"}</b></p>
+            <img
+              src={item.product?.image || item.image}
+              alt=""
+              className="cart-img"
+            />
 
-            <p>
-              Price: <b>₹{getOfferPrice(item)}</b>&nbsp;
-              <span style={{ textDecoration: "line-through", color: "#777" }}>
-                ₹{getMRP(item)}
-              </span>
-            </p>
+            <div className="cart-details">
+              <h3>{item.productName}</h3>
 
-            <div>
-              <button onClick={() => decrease(item)}>-</button>
-              <span style={{ margin: "0 10px" }}>{item.quantity}</span>
-              <button onClick={() => increase(item)}>+</button>
+              <p className="variant">Variant: <b>{item.variant?.label}</b></p>
+
+              <p className="price">
+                ₹{getOfferPrice(item)}
+                <span className="mrp">₹{getMRP(item)}</span>
+              </p>
+
+              <div className="qty-row">
+                <button className="qty-btn" onClick={() => decrease(item)}>-</button>
+                <span className="qty-num">{item.quantity}</span>
+                <button className="qty-btn" onClick={() => increase(item)}>+</button>
+              </div>
+
+              <button className="remove-btn" onClick={() => removeItem(item)}>
+                Remove
+              </button>
             </div>
-
-            <button
-              onClick={() => removeItem(item)}
-              style={{ marginTop: "10px", color: "red" }}
-            >
-              Remove
-            </button>
           </div>
-        </div>
-      ))}
+        ))}
 
-      <h2>Total: ₹ {total}</h2>
+      </div>
 
-      <button
-        onClick={() => (window.location.href = "/checkout")}
-        style={{
-          marginTop: "20px",
-          padding: "12px 20px",
-          background: "green",
-          color: "white",
-          fontSize: "16px",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-        }}
-      >
-        Proceed to Checkout
-      </button>
+      {/* RIGHT – TOTAL BOX */}
+      <div className="cart-right">
+        <h3>Subtotal ({cartItems.length} items)</h3>
+        <h2>₹{total}</h2>
+
+        <button
+          className="checkout-btn"
+          onClick={() => navigate("/checkout")}
+        >
+          Proceed to Checkout
+        </button>
+      </div>
+
     </div>
   );
 };

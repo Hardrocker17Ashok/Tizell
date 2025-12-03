@@ -1,99 +1,106 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
-
+import { useNavigate } from "react-router-dom";
+import "./Orders.css";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const navigate = useNavigate();
 
+  // Fetch logged-in user's orders
   useEffect(() => {
-  const fetchOrders = async () => {
-    if (!auth.currentUser) return;
+    const fetchOrders = async () => {
+      if (!auth.currentUser) return;
 
-    const q = query(
-      collection(db, "orders"),
-      where("userId", "==", auth.currentUser.uid)   // ✅ filter by user
-    );
+      const q = query(
+        collection(db, "orders"),
+        where("userId", "==", auth.currentUser.uid)
+      );
 
-    const snap = await getDocs(q);
-    const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    setOrders(list);
-  };
+      const snap = await getDocs(q);
+      const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      setOrders(list);
+    };
 
-  fetchOrders();
-}, []);
+    fetchOrders();
+  }, []);
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Your Orders</h2>
+    <div className="orders-container">
 
-      {orders.length === 0 && <p>No orders found.</p>}
+      <h2 className="orders-title">Your Orders</h2>
+
+      {orders.length === 0 && (
+        <p className="empty-text">No orders found.</p>
+      )}
 
       {orders.map((order) => (
-        <div
-          key={order.orderId}
-          style={{
-            padding: 15,
-            border: "1px solid #ddd",
-            borderRadius: "10px",
-            marginBottom: 20,
-            background: "#f9f9f9",
-          }}
-        >
-          <h3>Order ID: {order.orderId}</h3>
+        <div className="order-card" key={order.id}>
+          
+          {/* Order Header */}
+          <div className="order-header">
+            <div>
+              <p><b>Order ID:</b> {order.id}</p>
+              <p>
+                <b>Date:</b> {new Date(order.createdAt).toLocaleString()}
+              </p>
+            </div>
 
-          <p><b>Total:</b> ₹{order.total}</p>
+            <div className="order-total">
+              <p><b>Total Amount:</b></p>
+              <h3>₹{order.total}</h3>
+            </div>
+          </div>
 
-          <p><b>Name:</b> {order.userInfo?.name}</p>
-          <p><b>Phone:</b> {order.userInfo?.phone}</p>
-          <p><b>Address:</b> {order.userInfo?.address}</p>
-          <p><b>Pincode:</b> {order.userInfo?.pincode}</p>
-
-          <p>
-            <b>Order Date:</b>{" "}
-            {new Date(order.createdAt).toLocaleString()}
-          </p>
+          {/* Address */}
+          <div className="order-address">
+            <h4>Delivery Address</h4>
+            <p><b>{order.userInfo?.name}</b></p>
+            <p>{order.userInfo?.phone}</p>
+            <p>{order.userInfo?.district}, {order.userInfo?.state}</p>
+            <p>{order.userInfo?.address}</p>
+            <p>Pincode: {order.userInfo?.pincode}</p>
+          </div>
 
           <h4 style={{ marginTop: 15 }}>Items:</h4>
 
+          {/* Items List */}
           {order.items.map((item, index) => (
-            <div
-              key={index}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: 10,
-                padding: "8px 0",
-                borderBottom: "1px solid #eee",
-              }}
-            >
+            <div className="order-item" key={index}>
+              
               <img
-                src={item.product?.image}
-                alt={item.product?.name}
-                style={{
-                  width: 70,
-                  height: 70,
-                  objectFit: "contain",
-                  marginRight: 15,
-                  borderRadius: 6,
-                  background: "#fff",
-                  padding: 5,
-                }}
+                src={item.image}
+                alt=""
+                className="order-item-img"
               />
 
-              <div>
-                <p style={{ fontWeight: "bold" }}>
-                  {item.product?.name}
-                </p>
+              <div className="order-item-details">
+                <p className="item-name">{item.productName}</p>
+                
                 <p>
-                  Qty: {item.quantity} × ₹{item.product?.offerPrice}
+                  Variant: <b>{item.variant?.label}</b>
                 </p>
-                <p style={{ color: "green" }}>
-                  Subtotal: ₹{item.quantity * item.product?.offerPrice}
+
+                <p>
+                  Qty: {item.quantity} × ₹{item.variant?.offerPrice}
+                </p>
+
+                <p className="order-subtotal">
+                  Subtotal: ₹{item.quantity * item.variant?.offerPrice}
                 </p>
               </div>
             </div>
           ))}
+
+          {/* View Details Button */}
+          <button
+            className="order-detail-btn"
+            onClick={() => navigate(`/order/${order.id}`, { state: { order } })}
+          >
+            View Details
+          </button>
+
         </div>
       ))}
     </div>

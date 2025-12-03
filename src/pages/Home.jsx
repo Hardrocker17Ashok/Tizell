@@ -76,7 +76,7 @@ const Home = () => {
             onClick={() => scrollToSection("watch")}
           >
             <img src="pexels-mikebirdy-211758.jpg" alt="Wall Clock" />
-            <p>Wall Clock</p>
+            <p>Home Decor</p>
           </div>
 
           <div

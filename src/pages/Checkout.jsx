@@ -6,7 +6,8 @@ import {
   deleteDoc,
   doc,
   query,
-  where
+  where,
+  updateDoc
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -24,9 +25,11 @@ const Checkout = () => {
     phone: "",
     address: "",
     pincode: "",
+    district: "",   // ⭐ NEW
+    state: "",      // ⭐ NEW
   });
 
-  // ✅ Wait for real login state
+  // Wait for login
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setLoading(false);
@@ -35,11 +38,11 @@ const Checkout = () => {
     return () => unsub();
   }, [navigate]);
 
-  // ✅ Fetch logged user cart only
+  // Fetch cart
   useEffect(() => {
-    if (!auth.currentUser) return;
-
     const fetchCart = async () => {
+      if (!auth.currentUser) return;
+
       const q = query(
         collection(db, "cart"),
         where("userId", "==", auth.currentUser.uid)
@@ -59,20 +62,47 @@ const Checkout = () => {
 
   if (loading) return null;
 
-  // ✅ Total
+  // Total
   const total = cartItems.reduce(
     (sum, item) =>
       sum +
-      ((item.product?.offerPrice || item.offerPrice) *
-        (item.quantity || 1)),
+      (item.variant?.offerPrice || item.offerPrice) *
+        (item.quantity || 1),
     0
   );
 
-  // ✅ Place Order
-  const handleOrder = async () => {
-    const { name, phone, address, pincode } = userInfo;
+  // Remove item
+  const removeItem = async (item) => {
+    await deleteDoc(doc(db, "cart", item.cartId));
+    setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
+  };
 
-    if (!name || !phone || !address || !pincode) {
+  // Qty Update
+  const increaseQty = async (item) => {
+    await updateDoc(doc(db, "cart", item.cartId), {
+      quantity: item.quantity + 1,
+    });
+
+    item.quantity++;
+    setCartItems([...cartItems]);
+  };
+
+  const decreaseQty = async (item) => {
+    if (item.quantity === 1) return;
+
+    await updateDoc(doc(db, "cart", item.cartId), {
+      quantity: item.quantity - 1,
+    });
+
+    item.quantity--;
+    setCartItems([...cartItems]);
+  };
+
+  // Place order
+  const handleOrder = async () => {
+    const { name, phone, address, pincode, district, state } = userInfo;
+
+    if (!name || !phone || !address || !pincode || !district || !state) {
       alert("Please fill all details");
       return;
     }
@@ -82,7 +112,7 @@ const Checkout = () => {
         userId: auth.currentUser.uid,
         items: cartItems,
         total,
-        userInfo,
+        userInfo, // ⭐ Now includes district & state
         createdAt: Date.now(),
       });
 
@@ -100,22 +130,38 @@ const Checkout = () => {
 
   return (
     <div className="checkout-container">
-
       <h2 className="checkout-title">Checkout</h2>
 
       <div className="checkout-wrapper">
 
-        {/* ✅ LEFT — ORDER SUMMARY */}
+        {/* LEFT — SUMMARY */}
         <div className="summary-box">
           <h3>Order Summary</h3>
 
           {cartItems.map((item) => (
             <div className="summary-item" key={item.cartId}>
-              <img src={item.product?.image || item.image} alt="" />
-              <div>
-                <p>{item.product?.name || item.name}</p>
-                <strong>₹ {item.product?.offerPrice || item.offerPrice}</strong>
-                <p>Qty: {item.quantity}</p>
+              <img src={item.image} alt="" />
+
+              <div className="sum-info">
+                <p className="sum-title">{item.productName}</p>
+
+                <p className="sum-variant">
+                  Variant: <strong>{item.variant?.label}</strong>
+                </p>
+
+                <p className="sum-price">₹{item.variant?.offerPrice}</p>
+
+                <div className="qty-box">
+                  <button className="qty-btn" onClick={() => decreaseQty(item)}>-</button>
+                  <span className="qty-num">{item.quantity}</span>
+                  <button className="qty-btn" onClick={() => increaseQty(item)}>+</button>
+                </div>
+              </div>
+
+              <div className="remove-col">
+                <button className="sum-remove-btn" onClick={() => removeItem(item)}>
+                  Remove
+                </button>
               </div>
             </div>
           ))}
@@ -124,52 +170,74 @@ const Checkout = () => {
             <span>Total</span>
             <span>₹ {total}</span>
           </div>
+
+          <button className="add-more-btn" onClick={() => navigate("/")}>
+            + Add More Items
+          </button>
         </div>
 
-        {/* ✅ RIGHT — ADDRESS FORM */}
+        {/* RIGHT — BILLING FORM */}
         <div className="form-box">
           <h3>Billing Details</h3>
 
           <input
             placeholder="Full Name"
             value={userInfo.name}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, name: e.target.value })
-            }
+            onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
           />
 
           <input
             placeholder="Phone Number"
             value={userInfo.phone}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, phone: e.target.value })
-            }
+            onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
+          />
+
+          <input
+            placeholder="District"
+            value={userInfo.district}
+            onChange={(e) => setUserInfo({ ...userInfo, district: e.target.value })}
+          />
+
+          {/* ⭐ NEW STATE */}
+          <input
+            placeholder="State"
+            value={userInfo.state}
+            onChange={(e) => setUserInfo({ ...userInfo, state: e.target.value })}
           />
 
           <textarea
             placeholder="Full Address"
             rows={3}
             value={userInfo.address}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, address: e.target.value })
-            }
+            onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
           />
 
           <input
             placeholder="Pincode"
             value={userInfo.pincode}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, pincode: e.target.value })
-            }
+            onChange={(e) => setUserInfo({ ...userInfo, pincode: e.target.value })}
           />
 
-          <button className="place-btn" onClick={handleOrder}>
-            Place Order
-          </button>
+
+        <button
+  className="place-btn"
+  onClick={() =>
+    navigate("/payment", {
+      state: {
+        total,
+        cartItems,
+        userInfo,
+      },
+    })
+  }
+>
+  Proceed to Payment
+</button>
+
+
         </div>
 
       </div>
-
     </div>
   );
 };

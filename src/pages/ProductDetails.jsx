@@ -46,6 +46,23 @@ const ProductDetails = () => {
     }
   };
 
+  const handleBuyNow = () => {
+  if (!auth.currentUser) {
+    navigate("/login");
+    return;
+  }
+
+  navigate("/checkout", {
+    state: {
+      buyNow: true,
+      product,
+      variant: selectedVariant,
+      quantity: 1
+    }
+  });
+};
+
+
   return (
     <div className="pd-container">
 
@@ -108,10 +125,10 @@ const ProductDetails = () => {
             <tr><td>Brand</td><td>{product.specs?.brand}</td></tr>
             <tr><td>Material</td><td>{product.specs?.material}</td></tr>
             <tr><td>Colour</td><td>{product.specs?.color}</td></tr>
-            <tr><td>Dimensions</td><td>{product.specs?.dimensions}</td></tr>
+            
             <tr><td>Weight</td><td>{product.specs?.weight}</td></tr>
-            <tr><td>Outside Diameter</td><td>{product.specs?.outerDiameter}</td></tr>
-            <tr><td>Item Length</td><td>{product.specs?.length}</td></tr>
+            
+           
             <tr><td>Manufacturer</td><td>{product.specs?.manufacturer}</td></tr>
           </tbody>
         </table>
@@ -141,7 +158,10 @@ const ProductDetails = () => {
           Add to Cart
         </button>
 
-        <button className="pd-buy">Buy Now</button>
+        <button className="pd-buy" onClick={handleBuyNow}>
+  Buy Now
+</button>
+
       </div>
     </div>
   );
