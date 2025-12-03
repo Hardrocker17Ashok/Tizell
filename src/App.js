@@ -20,9 +20,6 @@ function App() {
 
       <Routes>
 
-      
-    
-
         <Route path="/add-variants" element={<AddVariants />} />
 
         <Route path="/order/:id" element={<OrderDetails />} />

@@ -219,20 +219,36 @@ const Checkout = () => {
           />
 
 
-        <button
+       <button
   className="place-btn"
-  onClick={() =>
+  onClick={() => {
+    const { name, phone, address, pincode, district, state } = userInfo;
+
+    if (!name.trim()) return alert("Please enter your full name");
+    if (!phone.trim()) return alert("Please enter your phone number");
+    if (!/^[6-9]\d{9}$/.test(phone)) 
+    return alert("Please enter a valid 10-digit phone number");
+    if (!district.trim()) return alert("Please enter your district");
+    if (!state.trim()) return alert("Please enter your state");
+    if (!address.trim()) return alert("Please enter your full address");
+    if (!pincode.trim()) return alert("Please enter your pincode");
+    if (pincode.length !== 6)
+  return alert("Please enter a valid 6-digit pincode");
+
+
+    // ⭐ If all fields filled → Go to payment page
     navigate("/payment", {
       state: {
-        total,
-        cartItems,
-        userInfo,
+        cartItems: cartItems,
+        total: total,
+        userInfo: userInfo,
       },
-    })
-  }
+    });
+  }}
 >
   Proceed to Payment
 </button>
+
 
 
         </div>
