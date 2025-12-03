@@ -17,7 +17,7 @@ const ProductDetails = () => {
     product.image || product.image2 || product.image3
   );
 
-  // 🔥 Open page from TOP
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -89,9 +89,9 @@ const ProductDetails = () => {
       <div className="pd-center">
         <h2 className="pd-title">{product.name}</h2>
 
-        {/* ⭐ RATING */}
+    
         <div className="pd-rating">
-          ⭐⭐⭐⭐ <span className="pd-review-count">(210 ratings)</span>
+          ⭐⭐⭐ <span className="pd-review-count">(210 ratings)</span>
         </div>
 
         {/* VARIANTS */}

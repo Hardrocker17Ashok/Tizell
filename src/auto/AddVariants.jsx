@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { db } from "../firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
-// ⭐ COMMON SPECS (all products)
+
 const commonSpecs = {
   brand: "Ardnib",
   material: "Aluminium",
@@ -14,7 +14,6 @@ const commonSpecs = {
   manufacturer: "Bindra Industries",
 };
 
-// ⭐ COMMON DESCRIPTION
 const commonAbout = `
 Built to Last: Crafted from premium aluminum, this chimney ensures durability, perfect for busy kitchens.
 Fits Any Setup: Flexible design extends up to 10 feet, perfect for most kitchens.
@@ -41,7 +40,7 @@ const AddVarients = () => {
         console.log("UPDATED:", d.id);
       }
 
-      alert("🔥 All product details added successfully!");
+      alert(" All product details added successfully!");
     };
 
     updateAllProducts();

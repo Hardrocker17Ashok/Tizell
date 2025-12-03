@@ -41,7 +41,7 @@
   color: #ffcc00 !important;
 }
 
-/* PROFILE ICON */
+
 .profile-wrapper {
   position: relative;
   cursor: pointer;
@@ -55,7 +55,7 @@
   cursor: pointer;
 }
 
-/* PROFILE DROPDOWN */
+
 .profile-menu {
   position: absolute;
   right: 0;

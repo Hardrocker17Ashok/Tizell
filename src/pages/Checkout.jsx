@@ -25,8 +25,8 @@ const Checkout = () => {
     phone: "",
     address: "",
     pincode: "",
-    district: "",   // ⭐ NEW
-    state: "",      // ⭐ NEW
+    district: "",   
+    state: "",      
   });
 
   // Wait for login
@@ -77,7 +77,7 @@ const Checkout = () => {
     setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
   };
 
-  // Qty Update
+
   const increaseQty = async (item) => {
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity + 1,
@@ -98,7 +98,7 @@ const Checkout = () => {
     setCartItems([...cartItems]);
   };
 
-  // Place order
+
   const handleOrder = async () => {
     const { name, phone, address, pincode, district, state } = userInfo;
 
@@ -112,7 +112,7 @@ const Checkout = () => {
         userId: auth.currentUser.uid,
         items: cartItems,
         total,
-        userInfo, // ⭐ Now includes district & state
+        userInfo, 
         createdAt: Date.now(),
       });
 
@@ -134,7 +134,7 @@ const Checkout = () => {
 
       <div className="checkout-wrapper">
 
-        {/* LEFT — SUMMARY */}
+
         <div className="summary-box">
           <h3>Order Summary</h3>
 
@@ -176,7 +176,6 @@ const Checkout = () => {
           </button>
         </div>
 
-        {/* RIGHT — BILLING FORM */}
         <div className="form-box">
           <h3>Billing Details</h3>
 
@@ -198,7 +197,6 @@ const Checkout = () => {
             onChange={(e) => setUserInfo({ ...userInfo, district: e.target.value })}
           />
 
-          {/* ⭐ NEW STATE */}
           <input
             placeholder="State"
             value={userInfo.state}
@@ -236,7 +234,7 @@ const Checkout = () => {
   return alert("Please enter a valid 6-digit pincode");
 
 
-    // ⭐ If all fields filled → Go to payment page
+  
     navigate("/payment", {
       state: {
         cartItems: cartItems,

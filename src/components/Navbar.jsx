@@ -17,7 +17,7 @@ const Navbar = () => {
 
   const profileRef = useRef(null);
 
-  // ✅ Track login/logout
+  
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -26,7 +26,7 @@ const Navbar = () => {
 
     return () => unsub();
   }, []);
-  // ✅ User-based cart count
+  
   useEffect(() => {
     if (!user) return;
 
@@ -44,7 +44,7 @@ const Navbar = () => {
     return () => unsub();
   }, [user]);
 
-  // ✅ Close dropdown when clicking outside
+
   useEffect(() => {
     const handleClick = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -56,7 +56,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // ✅ Logout user
 
   const logoutHandler = async () => {
   await signOut(auth);
@@ -65,18 +64,18 @@ const Navbar = () => {
 
   alert("Logged out!");
 
-  navigate("/"); // ✅ redirect to home
+  navigate("/"); 
 };
 
 
   return (
     <nav className="nav-container">
-      {/* ✅ Logo */}
+  
       <div className="nav-logo">
         <Link to="/">Tizell</Link>
       </div>
 
-      {/* ✅ Navbar Links */}
+      
       <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
         <li><Link to="/">Home</Link></li>
 
@@ -84,7 +83,7 @@ const Navbar = () => {
 
         <li><Link to="/cart">Cart ({cartCount})</Link></li>
 
-        {/* ✅ Auth buttons */}
+        
         {!user ? (
           <li><Link to="/login" className="login-btn">Login</Link></li>
         ) : (
@@ -115,7 +114,7 @@ const Navbar = () => {
         )}
       </ul>
 
-      {/* ✅ Mobile menu button */}
+      
       <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
         <FaBars />
       </div>

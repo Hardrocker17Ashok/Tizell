@@ -5,7 +5,7 @@ const ProductCard = ({ product }) => {
   return (
     <div className="card">
 
-      {/* Product Image */}
+      
       <img
         src={product.image}
         alt={product.name}
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
         {/* Offer Price */}
         <p className="offer-price">₹ {product.offerPrice}</p>
 
-        {/* Actual Price + Discount */}
+        
         <p className="price">
           <span className="actual-price">₹ {product.price}</span>
           <span className="discount"> {product.discountPercent}% OFF</span>

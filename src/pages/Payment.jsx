@@ -29,15 +29,15 @@ const handleProceed = async () => {
     createdAt: Date.now(),
   };
 
-  // save order in Firestore
+  
   const orderRef = await addDoc(collection(db, "orders"), orderData);
 
-  // clear cart
+  
   state.cartItems.forEach(async (item) => {
     await deleteDoc(doc(db, "cart", item.cartId));
   });
 
-  // navigate to success page
+
   navigate("/order-success", {
     state: {
       message:

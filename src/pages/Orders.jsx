@@ -8,7 +8,7 @@ const Orders = () => {
   const [orders, setOrders] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch logged-in user's orders
+  
   useEffect(() => {
     const fetchOrders = async () => {
       if (!auth.currentUser) return;
@@ -93,7 +93,7 @@ const Orders = () => {
             </div>
           ))}
 
-          {/* View Details Button */}
+      
           <button
             className="order-detail-btn"
             onClick={() => navigate(`/order/${order.id}`, { state: { order } })}

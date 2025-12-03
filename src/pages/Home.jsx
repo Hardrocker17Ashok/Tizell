@@ -9,7 +9,7 @@ import { db } from "../firebase";
 const Home = () => {
   const [products, setProducts] = useState([]);
 
-  // ✅ Fetch products from Firestore
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {

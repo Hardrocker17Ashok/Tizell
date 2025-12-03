@@ -143,8 +143,8 @@
 
 .summary-item {
   display: flex;
-  align-items: center;       /* perfect vertical alignment */
-  justify-content: space-between; /* image left, remove right */
+  align-items: center;      
+  justify-content: space-between; 
   border-bottom: 1px solid #eee;
   padding: 12px 0;
   gap: 15px;
@@ -158,9 +158,8 @@
   border-radius: 6px;
 }
 
-/* Middle column takes full width */
 .sum-info {
-  flex: 1;                 /* expand middle section */
+  flex: 1;               
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -171,7 +170,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 80px;          /* fixed width so alignment stable */
+  min-width: 80px;         
 }
 
 .sum-remove-btn {

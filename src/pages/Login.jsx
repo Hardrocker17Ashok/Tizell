@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // ✅ direct redirect
+      navigate("/"); 
     } catch (error) {
       alert("Invalid email or password");
     }

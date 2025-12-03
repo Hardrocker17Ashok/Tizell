@@ -54,14 +54,14 @@ const OrderDetails = () => {
         <p><b>Pincode:</b> {order.userInfo?.pincode}</p>
       </div>
 
-      {/* ITEMS LIST */}
+  
       <div className="od-box">
         <h3>Items in this Order</h3>
 
         {order.items.map((item, i) => (
           <div className="od-item" key={i}>
 
-            {/* ⭐ Image fix here */}
+      
            <img
                 src={item.image}
                 alt=""

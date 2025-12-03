@@ -80,7 +80,7 @@ const Cart = () => {
   return (
     <div className="cart-page">
 
-      {/* LEFT – CART ITEMS */}
+    
       <div className="cart-left">
         <h2 className="cart-title">Shopping Cart</h2>
 
