@@ -29,38 +29,43 @@ const Checkout = () => {
   });
 
   const [loadingPin, setLoadingPin] = useState(false);
-  const [loadingPhone, setLoadingPhone] = useState(false);
 
+  const validateIndianPhone = (phone) => {
+    phone = phone.trim();
 
-  const verifyPhoneNumber = async (phone) => {
-    if (phone.length !== 10) return { valid: false };
+    // Basic check
+    if (!/^[0-9]{10}$/.test(phone)) return false;
+    if (!/^[6-9]/.test(phone)) return false;
 
-    try {
-      setLoadingPhone(true);
-      const res = await fetch(
-        `https://phoneintelligence.abstractapi.com/v1/?api_key=ace8a8b87abb4c258f289d46656a544a&phone=14152007986`
-      );
+    if (/^(.)\1+$/.test(phone)) return false;
 
-      const data = await res.json();
-      setLoadingPhone(false);
-
-      if (data?.data?.length > 0) {
-        return {
-          valid: true,
-          name: data.data[0]?.name || null,
-          carrier: data.data[0]?.carrier || null,
-          score: data.data[0]?.score || 0,
-        };
-      }
-
-      return { valid: false };
-    } catch (err) {
-      setLoadingPhone(false);
-      console.log("Phone API Error:", err);
-      return { valid: false };
+    
+    let repeatCount = 0;
+    for (let i = 1; i < phone.length; i++) {
+      if (phone[i] === phone[i - 1]) repeatCount++;
     }
-  };
+    if (repeatCount >= 4) return false;
 
+    
+    if (/^(\d\d)\1+$/.test(phone)) return false;
+
+
+    const bad = [
+      "1234567890",
+      "0123456789",
+      "9876543210",
+      "9999999999",
+      "8888888888",
+      "7777777777",
+      "6666666666",
+      "9090909090",
+      "6789123411",
+      "6789012345",
+    ];
+    if (bad.includes(phone)) return false;
+
+    return true;
+  };
 
   const verifyPincode = async (pincode) => {
     if (pincode.length !== 6) return;
@@ -80,7 +85,12 @@ const Checkout = () => {
           state: post.State,
         }));
       } else {
-        alert(" Invalid Pincode");
+        alert("Invalid Pincode");
+        setUserInfo((prev) => ({
+          ...prev,
+          district: "",
+          state: "",
+        }));
       }
     } catch (err) {
       setLoadingPin(false);
@@ -95,6 +105,7 @@ const Checkout = () => {
     });
     return () => unsub();
   }, [navigate]);
+
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -119,6 +130,9 @@ const Checkout = () => {
 
   if (loading) return null;
 
+  // -------------------------------------
+  // TOTAL PRICE
+  // -------------------------------------
   const total = cartItems.reduce(
     (sum, item) =>
       sum +
@@ -126,13 +140,17 @@ const Checkout = () => {
     0
   );
 
-  
+  // -------------------------------------
+  // REMOVE CART ITEM
+  // -------------------------------------
   const removeItem = async (item) => {
     await deleteDoc(doc(db, "cart", item.cartId));
     setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
   };
 
-
+  // -------------------------------------
+  // QTY UPDATE
+  // -------------------------------------
   const increaseQty = async (item) => {
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity + 1,
@@ -156,15 +174,17 @@ const Checkout = () => {
     const { name, phone, address, pincode, district, state } = userInfo;
 
     if (!name.trim()) return alert("Please enter your full name");
-    if (!/^[6-9]\d{9}$/.test(phone))
-      return alert("Enter valid Indian phone number");
+
+    if (!validateIndianPhone(phone))
+      return alert("❌ Please enter a valid Indian phone number");
 
     if (!state.trim() || !district.trim())
-      return alert("Please enter valid state & district");
+      return alert("❌ Invalid State or District based on Pincode");
 
-    if (!address.trim()) return alert("Enter your full address");
-    if (!pincode.trim() || pincode.length !== 6)
-      return alert("Enter valid 6-digit pincode");
+    if (!address.trim()) return alert("Please enter your full address");
+
+    if (!/^[1-9][0-9]{5}$/.test(pincode))
+      return alert("❌ Enter valid 6-digit pincode");
 
     navigate("/payment", {
       state: { cartItems, total, userInfo },
@@ -176,7 +196,8 @@ const Checkout = () => {
       <h2 className="checkout-title">Checkout</h2>
 
       <div className="checkout-wrapper">
-      
+        
+        {/* LEFT SUMMARY */}
         <div className="summary-box">
           <h3>Order Summary</h3>
 
@@ -223,7 +244,7 @@ const Checkout = () => {
           </button>
         </div>
 
-    
+        {/* RIGHT BILLING */}
         <div className="form-box">
           <h3>Billing Details</h3>
 
@@ -235,26 +256,15 @@ const Checkout = () => {
             }
           />
 
-      
           <input
             placeholder="Phone Number"
             maxLength={10}
             value={userInfo.phone}
-            onChange={async (e) => {
-              const phone = e.target.value;
-              setUserInfo({ ...userInfo, phone });
-
-              // if (phone.length === 10) {
-              //   const result = await verifyPhoneNumber(phone);
-
-              //   if (!result.valid) {
-              //     alert("Invalid or unregistered phone number!");
-              //   }
-              // }
-            }}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, phone: e.target.value })
+            }
           />
 
-        
           <input
             placeholder="Pincode"
             maxLength={6}
@@ -266,7 +276,6 @@ const Checkout = () => {
             }}
           />
 
-        
           <input
             placeholder="State"
             value={userInfo.state}
@@ -274,7 +283,6 @@ const Checkout = () => {
             style={{ background: "#eaeaea" }}
           />
 
-        
           <input
             placeholder="District"
             value={userInfo.district}
@@ -282,7 +290,6 @@ const Checkout = () => {
             style={{ background: "#eaeaea" }}
           />
 
-          {/* ADDRESS */}
           <textarea
             placeholder="Full Address"
             rows={3}
@@ -292,9 +299,8 @@ const Checkout = () => {
             }
           />
 
-          {/* BUTTON */}
           <button className="place-btn" onClick={handleProceedToPayment}>
-            {loadingPhone || loadingPin ? "Validating..." : "Proceed to Payment"}
+            {loadingPin ? "Validating..." : "Proceed to Payment"}
           </button>
         </div>
       </div>
