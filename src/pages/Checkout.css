@@ -2,10 +2,11 @@
   padding: 30px;
   max-width: 1200px;
   margin: auto;
+  font-family: "Segoe UI", sans-serif;
 }
 
 .checkout-title {
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 700;
   margin-bottom: 25px;
   text-align: center;
@@ -14,94 +15,37 @@
 .checkout-wrapper {
   display: flex;
   gap: 25px;
+  align-items: flex-start;
 }
 
-/* ✅ ORDER SUMMARY */
+/* LEFT — ORDER SUMMARY */
 .summary-box {
   flex: 1;
   background: #fff;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
 }
 
-.summary-box h3 {
-  margin-bottom: 15px;
-}
-
-
-.total-bar {
+.summary-item {
   display: flex;
-  justify-content: space-between;
-  padding-top: 15px;
-  font-size: 22px;
-  font-weight: bold;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
 }
 
-
-
-
-/* ADD MORE BUTTON */
-.add-more-btn {
-  margin-top: 20px;
-  padding: 12px;
-  width: 100%;
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 16px;
+.summary-item img {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fafafa;
+  padding: 5px;
 }
 
-.add-more-btn:hover {
-  background: #ffcc00;
-  color: black;
-}
-
-/* ✅ BILLING FORM */
-.form-box {
+.sum-info {
   flex: 1;
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-}
-
-.form-box input,
-.form-box textarea {
-  width: 100%;
-  padding: 12px;
-  margin-top: 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-/* PLACE ORDER BUTTON */
-.place-btn {
-  width: 100%;
-  margin-top: 25px;
-  padding: 14px;
-  background: #111;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.place-btn:hover {
-  background: #ffcc00;
-  color: black;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .checkout-wrapper {
-    flex-direction: column;
-  }
 }
 
 .sum-title {
@@ -109,79 +53,142 @@
   font-weight: 600;
 }
 
-.sum-variant,
-.sum-price {
+.sum-variant {
   font-size: 14px;
+  color: #444;
+}
+
+.sum-price {
+  font-size: 18px;
+  font-weight: 600;
+  color: green;
 }
 
 .qty-box {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 6px;
+  margin-top: 5px;
 }
 
 .qty-btn {
-  padding: 4px 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  background: #eee;
+  padding: 5px 12px;
+  border: 1px solid #555;
+  background: #fff;
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: 5px;
 }
 
 .qty-num {
-  font-size: 16px;
-  font-weight: bold;
+  margin: 0 10px;
+  font-weight: 500;
 }
 
-
-
-
-
-
-
-.summary-item {
-  display: flex;
-  align-items: center;      
-  justify-content: space-between; 
-  border-bottom: 1px solid #eee;
-  padding: 12px 0;
-  gap: 15px;
-}
-
-/* Image column */
-.summary-item img {
-  width: 75px;
-  height: 75px;
-  object-fit: contain;
-  border-radius: 6px;
-}
-
-.sum-info {
-  flex: 1;               
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* Remove button column */
 .remove-col {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 80px;         
 }
 
 .sum-remove-btn {
   background: none;
+  color: #e60000;
   border: none;
-  color: #ff3333;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
 }
 
 .sum-remove-btn:hover {
   text-decoration: underline;
+}
+
+.total-bar {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.add-more-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: #000000;
+  color: white;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.add-more-btn:hover {
+  background: #ffcc00;
+  color: #000000;
+}
+
+/* RIGHT — BILLING FORM */
+.form-box {
+  flex: 1;
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+}
+
+.form-box h3 {
+  margin-bottom: 15px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.form-box input,
+.form-box textarea,
+.form-box select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #fafafa;
+  transition: 0.2s;
+}
+
+.form-box input:focus,
+.form-box textarea:focus,
+.form-box select:focus {
+  border-color: #ff9900;
+  background: #fff;
+  outline: none;
+}
+
+/* DROPDOWN STYLE */
+.form-box select {
+  background: #fefefe;
+  cursor: pointer;
+}
+
+/* BUTTON */
+.place-btn {
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px;
+  background: #000000;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.place-btn:hover {
+  background: #25c323;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .checkout-wrapper {
+    flex-direction: column;
+  }
 }

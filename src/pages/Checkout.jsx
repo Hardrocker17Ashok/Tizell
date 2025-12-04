@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import {
   collection,
   getDocs,
-  addDoc,
   deleteDoc,
   doc,
   query,
   where,
-  updateDoc
+  updateDoc,
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -25,11 +24,70 @@ const Checkout = () => {
     phone: "",
     address: "",
     pincode: "",
-    district: "",   
-    state: "",      
+    district: "",
+    state: "",
   });
 
-  // Wait for login
+  const [loadingPin, setLoadingPin] = useState(false);
+  const [loadingPhone, setLoadingPhone] = useState(false);
+
+
+  const verifyPhoneNumber = async (phone) => {
+    if (phone.length !== 10) return { valid: false };
+
+    try {
+      setLoadingPhone(true);
+      const res = await fetch(
+        `https://phoneintelligence.abstractapi.com/v1/?api_key=ace8a8b87abb4c258f289d46656a544a&phone=14152007986`
+      );
+
+      const data = await res.json();
+      setLoadingPhone(false);
+
+      if (data?.data?.length > 0) {
+        return {
+          valid: true,
+          name: data.data[0]?.name || null,
+          carrier: data.data[0]?.carrier || null,
+          score: data.data[0]?.score || 0,
+        };
+      }
+
+      return { valid: false };
+    } catch (err) {
+      setLoadingPhone(false);
+      console.log("Phone API Error:", err);
+      return { valid: false };
+    }
+  };
+
+
+  const verifyPincode = async (pincode) => {
+    if (pincode.length !== 6) return;
+
+    try {
+      setLoadingPin(true);
+      const res = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
+      const data = await res.json();
+      setLoadingPin(false);
+
+      if (data[0].Status === "Success") {
+        const post = data[0].PostOffice[0];
+
+        setUserInfo((prev) => ({
+          ...prev,
+          district: post.District,
+          state: post.State,
+        }));
+      } else {
+        alert(" Invalid Pincode");
+      }
+    } catch (err) {
+      setLoadingPin(false);
+      console.log("PIN API Error:", err);
+    }
+  };
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setLoading(false);
@@ -38,7 +96,6 @@ const Checkout = () => {
     return () => unsub();
   }, [navigate]);
 
-  // Fetch cart
   useEffect(() => {
     const fetchCart = async () => {
       if (!auth.currentUser) return;
@@ -62,16 +119,14 @@ const Checkout = () => {
 
   if (loading) return null;
 
-  // Total
   const total = cartItems.reduce(
     (sum, item) =>
       sum +
-      (item.variant?.offerPrice || item.offerPrice) *
-        (item.quantity || 1),
+      (item.variant?.offerPrice || item.offerPrice) * (item.quantity || 1),
     0
   );
 
-  // Remove item
+  
   const removeItem = async (item) => {
     await deleteDoc(doc(db, "cart", item.cartId));
     setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
@@ -82,7 +137,6 @@ const Checkout = () => {
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity + 1,
     });
-
     item.quantity++;
     setCartItems([...cartItems]);
   };
@@ -93,39 +147,28 @@ const Checkout = () => {
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity - 1,
     });
-
     item.quantity--;
     setCartItems([...cartItems]);
   };
 
 
-  const handleOrder = async () => {
+  const handleProceedToPayment = () => {
     const { name, phone, address, pincode, district, state } = userInfo;
 
-    if (!name || !phone || !address || !pincode || !district || !state) {
-      alert("Please fill all details");
-      return;
-    }
+    if (!name.trim()) return alert("Please enter your full name");
+    if (!/^[6-9]\d{9}$/.test(phone))
+      return alert("Enter valid Indian phone number");
 
-    try {
-      await addDoc(collection(db, "orders"), {
-        userId: auth.currentUser.uid,
-        items: cartItems,
-        total,
-        userInfo, 
-        createdAt: Date.now(),
-      });
+    if (!state.trim() || !district.trim())
+      return alert("Please enter valid state & district");
 
-      cartItems.forEach(async (item) => {
-        await deleteDoc(doc(db, "cart", item.cartId));
-      });
+    if (!address.trim()) return alert("Enter your full address");
+    if (!pincode.trim() || pincode.length !== 6)
+      return alert("Enter valid 6-digit pincode");
 
-      alert("Order Placed Successfully!");
-      navigate("/orders");
-    } catch (error) {
-      console.error(error);
-      alert("Order failed. Try again.");
-    }
+    navigate("/payment", {
+      state: { cartItems, total, userInfo },
+    });
   };
 
   return (
@@ -133,8 +176,7 @@ const Checkout = () => {
       <h2 className="checkout-title">Checkout</h2>
 
       <div className="checkout-wrapper">
-
-
+      
         <div className="summary-box">
           <h3>Order Summary</h3>
 
@@ -144,22 +186,27 @@ const Checkout = () => {
 
               <div className="sum-info">
                 <p className="sum-title">{item.productName}</p>
-
                 <p className="sum-variant">
                   Variant: <strong>{item.variant?.label}</strong>
                 </p>
-
                 <p className="sum-price">₹{item.variant?.offerPrice}</p>
 
                 <div className="qty-box">
-                  <button className="qty-btn" onClick={() => decreaseQty(item)}>-</button>
+                  <button className="qty-btn" onClick={() => decreaseQty(item)}>
+                    -
+                  </button>
                   <span className="qty-num">{item.quantity}</span>
-                  <button className="qty-btn" onClick={() => increaseQty(item)}>+</button>
+                  <button className="qty-btn" onClick={() => increaseQty(item)}>
+                    +
+                  </button>
                 </div>
               </div>
 
               <div className="remove-col">
-                <button className="sum-remove-btn" onClick={() => removeItem(item)}>
+                <button
+                  className="sum-remove-btn"
+                  onClick={() => removeItem(item)}
+                >
                   Remove
                 </button>
               </div>
@@ -176,81 +223,80 @@ const Checkout = () => {
           </button>
         </div>
 
+    
         <div className="form-box">
           <h3>Billing Details</h3>
 
           <input
             placeholder="Full Name"
             value={userInfo.name}
-            onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, name: e.target.value })
+            }
           />
 
+      
           <input
             placeholder="Phone Number"
+            maxLength={10}
             value={userInfo.phone}
-            onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
+            onChange={async (e) => {
+              const phone = e.target.value;
+              setUserInfo({ ...userInfo, phone });
+
+              // if (phone.length === 10) {
+              //   const result = await verifyPhoneNumber(phone);
+
+              //   if (!result.valid) {
+              //     alert("Invalid or unregistered phone number!");
+              //   }
+              // }
+            }}
           />
 
+        
           <input
-            placeholder="District"
-            value={userInfo.district}
-            onChange={(e) => setUserInfo({ ...userInfo, district: e.target.value })}
+            placeholder="Pincode"
+            maxLength={6}
+            value={userInfo.pincode}
+            onChange={(e) => {
+              const pin = e.target.value;
+              setUserInfo({ ...userInfo, pincode: pin });
+              if (pin.length === 6) verifyPincode(pin);
+            }}
           />
 
+        
           <input
             placeholder="State"
             value={userInfo.state}
-            onChange={(e) => setUserInfo({ ...userInfo, state: e.target.value })}
+            readOnly
+            style={{ background: "#eaeaea" }}
           />
 
+        
+          <input
+            placeholder="District"
+            value={userInfo.district}
+            readOnly
+            style={{ background: "#eaeaea" }}
+          />
+
+          {/* ADDRESS */}
           <textarea
             placeholder="Full Address"
             rows={3}
             value={userInfo.address}
-            onChange={(e) => setUserInfo({ ...userInfo, address: e.target.value })}
+            onChange={(e) =>
+              setUserInfo({ ...userInfo, address: e.target.value })
+            }
           />
 
-          <input
-            placeholder="Pincode"
-            value={userInfo.pincode}
-            onChange={(e) => setUserInfo({ ...userInfo, pincode: e.target.value })}
-          />
-
-
-       <button
-  className="place-btn"
-  onClick={() => {
-    const { name, phone, address, pincode, district, state } = userInfo;
-
-    if (!name.trim()) return alert("Please enter your full name");
-    if (!phone.trim()) return alert("Please enter your phone number");
-    if (!/^[6-9]\d{9}$/.test(phone)) 
-    return alert("Please enter a valid 10-digit phone number");
-    if (!district.trim()) return alert("Please enter your district");
-    if (!state.trim()) return alert("Please enter your state");
-    if (!address.trim()) return alert("Please enter your full address");
-    if (!pincode.trim()) return alert("Please enter your pincode");
-    if (pincode.length !== 6)
-  return alert("Please enter a valid 6-digit pincode");
-
-
-  
-    navigate("/payment", {
-      state: {
-        cartItems: cartItems,
-        total: total,
-        userInfo: userInfo,
-      },
-    });
-  }}
->
-  Proceed to Payment
-</button>
-
-
-
+          {/* BUTTON */}
+          <button className="place-btn" onClick={handleProceedToPayment}>
+            {loadingPhone || loadingPin ? "Validating..." : "Proceed to Payment"}
+          </button>
         </div>
-
       </div>
     </div>
   );
