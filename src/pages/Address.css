@@ -1,0 +1,140 @@
+/* --------------------------------------------------
+   Address Page – Professional Modern UI
+-------------------------------------------------- */
+
+.addr-container {
+  max-width: 700px;
+  margin: auto;
+  padding: 25px;
+  font-family: "Inter", sans-serif;
+}
+
+.addr-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* Saved Address Box */
+.addr-box {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.08);
+  border: 1px solid #e5e5e5;
+  transition: 0.2s;
+  position: relative;
+}
+
+.addr-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.12);
+}
+
+.addr-box b {
+  font-size: 18px;
+  color: #333;
+}
+
+.addr-box p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Primary Badge */
+.set-primary {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background: #17bd1f;
+  color: white;
+  padding: 4px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Delete Button */
+.delete-btn {
+  margin-top: 10px;
+  background: #ff4b4b;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  background: #d63030;
+}
+
+/* --------------------------------------------------
+   Add New Address Form
+-------------------------------------------------- */
+
+.addr-container h3 {
+  margin-top: 30px;
+  font-size: 20px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.addr-container input,
+.addr-container textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d1d1;
+  font-size: 15px;
+  transition: 0.2s;
+  background: #fafafa;
+}
+
+.addr-container input:focus,
+.addr-container textarea:focus {
+  border-color: #2563eb;
+  background: #fff;
+  outline: none;
+  box-shadow: 0px 0px 6px rgba(37, 99, 235, 0.2);
+}
+
+.addr-container textarea {
+  resize: none;
+}
+
+/* Save Button */
+.addr-btn {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 10px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.addr-btn:hover {
+  background: #1e4fc4;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .addr-container {
+    padding: 15px;
+  }
+
+  .addr-box {
+    padding: 15px;
+  }
+}

@@ -3,29 +3,31 @@ import { getFirestore } from "firebase/firestore";
 import {
   getAuth,
   setPersistence,
-  browserLocalPersistence
+  browserSessionPersistence
 } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDGSQVydDGlJ_-DMb5x7Ibhx2frwrrR3MA",
   authDomain: "myshope-1ff26.firebaseapp.com",
   projectId: "myshope-1ff26",
-  storageBucket: "myshope-1ff26.appspot.com", // ✅ FIXED
+  storageBucket: "myshope-1ff26.appspot.com",
   messagingSenderId: "345118955736",
   appId: "1:345118955736:web:fcbc843c27751c596c9fad"
 };
 
-const app = initializeApp(firebaseConfig);
+// 🔥 Initialize Firebase App
+export const app = initializeApp(firebaseConfig);
 
-// ✅ Firestore
+// 🔥 Firestore DB
 export const db = getFirestore(app);
 
-// ✅ Auth with auto-login enabled
+// 🔥 Auth instance
 export const auth = getAuth(app);
 
-setPersistence(auth, browserLocalPersistence)
+// ❗ IMPORTANT FIX: No auto-login before verification
+setPersistence(auth, browserSessionPersistence)
   .then(() => {
-    console.log("✅ User will stay logged in even after refresh/close");
+    console.log("🔒 Session-based login enabled (no auto-login on refresh)");
   })
   .catch((err) => {
     console.error("Persistence error:", err);

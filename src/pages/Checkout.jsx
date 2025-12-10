@@ -7,14 +7,18 @@ import {
   query,
   where,
   updateDoc,
+  setDoc,
+  getDoc,
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
 import "./Checkout.css";
 
 const Checkout = () => {
   const navigate = useNavigate();
+  const { state } = useLocation(); // ⭐ BUY NOW DATA RECEIVE
+  const buyNowData = state?.buyNow ? state : null;
 
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,43 +34,100 @@ const Checkout = () => {
 
   const [loadingPin, setLoadingPin] = useState(false);
 
-  const validateIndianPhone = (phone) => {
-    phone = phone.trim();
+  // LOAD SAVED ADDRESS -----------------------------------
+  const loadSavedAddress = async () => {
+  if (!auth.currentUser) return;
 
-    // Basic check
-    if (!/^[0-9]{10}$/.test(phone)) return false;
-    if (!/^[6-9]/.test(phone)) return false;
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const snap = await getDoc(userRef);
 
-    if (/^(.)\1+$/.test(phone)) return false;
+  if (snap.exists()) {
+    const data = snap.data();
 
-    
-    let repeatCount = 0;
-    for (let i = 1; i < phone.length; i++) {
-      if (phone[i] === phone[i - 1]) repeatCount++;
+    const allAddresses = data.addresses || [];
+
+    // Find primary address
+    const primary = allAddresses.find((a) => a.isPrimary === true);
+
+    // If no primary → pick first address
+    const selected = primary || allAddresses[0];
+
+    if (selected) {
+      setUserInfo({
+        name: selected.name,
+        phone: selected.phone,
+        address: selected.address,
+        pincode: selected.pincode,
+        district: selected.district,
+        state: selected.state,
+      });
     }
-    if (repeatCount >= 4) return false;
-
-    
-    if (/^(\d\d)\1+$/.test(phone)) return false;
+  }
+};
 
 
-    const bad = [
-      "1234567890",
-      "0123456789",
-      "9876543210",
-      "9999999999",
-      "8888888888",
-      "7777777777",
-      "6666666666",
-      "9090909090",
-      "6789123411",
-      "6789012345",
-    ];
-    if (bad.includes(phone)) return false;
+  // PHONE VALIDATION -------------------------------------
+ const validateIndianPhone = (phone) => {
+  phone = phone.trim();
 
-    return true;
-  };
+  // 1. Must be exactly 10 digits
+  if (!/^[0-9]{10}$/.test(phone)) {
+    return { valid: false, reason: "Phone must be 10 digits." };
+  }
 
+  // 2. Must start with 6-9 (Indian mobile rule)
+  if (!/^[6-9]/.test(phone)) {
+    return { valid: false, reason: "Phone must start with 6, 7, 8, or 9." };
+  }
+
+  // 3. Reject all repeated digits (1111111111)
+  if (/^(.)\1{9}$/.test(phone)) {
+    return { valid: false, reason: "Repeated digits not allowed." };
+  }
+
+  // 4. Reject common fake numbers
+  const blacklist = [
+    "1234567890",
+    "0123456789",
+    "9876543210",
+    "0000000000",
+    "9999999999",
+    "8888888888",
+    "7777777777",
+    "6666666666"
+  ];
+
+  if (blacklist.includes(phone)) {
+    return { valid: false, reason: "This phone number looks fake." };
+  }
+
+  // 5. Reject ascending sequences (2345678901)
+  const ascending = "01234567890123456789";
+  if (ascending.includes(phone)) {
+    return { valid: false, reason: "Sequential numbers are invalid." };
+  }
+
+  // 6. Reject descending sequences (9876543210)
+  const descending = "98765432109876543210";
+  if (descending.includes(phone)) {
+    return { valid: false, reason: "Reverse sequential numbers are invalid." };
+  }
+
+  // 7. Reject phone number if any digit repeats more than 5 times
+  const counts = {};
+  for (let digit of phone) {
+    counts[digit] = (counts[digit] || 0) + 1;
+    if (counts[digit] >= 6) {
+      return { valid: false, reason: "Too many repeated digits." };
+    }
+  }
+
+  // 8. Very strong final validation
+  return { valid: true, reason: "Valid Indian phone number." };
+};
+
+
+  // PINCODE LOOKUP ---------------------------------------
   const verifyPincode = async (pincode) => {
     if (pincode.length !== 6) return;
 
@@ -86,11 +147,7 @@ const Checkout = () => {
         }));
       } else {
         alert("Invalid Pincode");
-        setUserInfo((prev) => ({
-          ...prev,
-          district: "",
-          state: "",
-        }));
+        setUserInfo((prev) => ({ ...prev, district: "", state: "" }));
       }
     } catch (err) {
       setLoadingPin(false);
@@ -98,18 +155,20 @@ const Checkout = () => {
     }
   };
 
+  // WAIT FOR LOGIN ---------------------------------------
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setLoading(false);
       if (!user) navigate("/login");
+      else loadSavedAddress();
     });
     return () => unsub();
   }, [navigate]);
 
-
+  // FETCH CART (ONLY IF NOT BUY NOW) ----------------------
   useEffect(() => {
     const fetchCart = async () => {
-      if (!auth.currentUser) return;
+      if (!auth.currentUser || buyNowData) return; // ⭐ BUY NOW → CART KO SKIP KARO
 
       const q = query(
         collection(db, "cart"),
@@ -130,67 +189,116 @@ const Checkout = () => {
 
   if (loading) return null;
 
-  // -------------------------------------
-  // TOTAL PRICE
-  // -------------------------------------
-  const total = cartItems.reduce(
+  // ---------------- TOTAL ----------------
+  const itemsToShow = buyNowData
+    ? [
+        {
+          cartId: "buynow",
+          productName: buyNowData.product.name,
+          image: buyNowData.product.image,
+          variant: buyNowData.variant,
+          quantity: buyNowData.quantity,
+        },
+      ]
+    : cartItems;
+
+  const total = itemsToShow.reduce(
     (sum, item) =>
-      sum +
-      (item.variant?.offerPrice || item.offerPrice) * (item.quantity || 1),
+      sum + item.variant.offerPrice * (item.quantity || 1),
     0
   );
 
-  // -------------------------------------
-  // REMOVE CART ITEM
-  // -------------------------------------
+  // REMOVE / QTY HANDLERS (NOT USED IN BUY NOW) ----------
   const removeItem = async (item) => {
+    if (item.cartId === "buynow") return;
     await deleteDoc(doc(db, "cart", item.cartId));
     setCartItems(cartItems.filter((i) => i.cartId !== item.cartId));
   };
 
-  // -------------------------------------
-  // QTY UPDATE
-  // -------------------------------------
   const increaseQty = async (item) => {
+    if (item.cartId === "buynow") return;
+
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity + 1,
     });
+
     item.quantity++;
     setCartItems([...cartItems]);
   };
 
   const decreaseQty = async (item) => {
+    if (item.cartId === "buynow") return;
     if (item.quantity === 1) return;
 
     await updateDoc(doc(db, "cart", item.cartId), {
       quantity: item.quantity - 1,
     });
+
     item.quantity--;
     setCartItems([...cartItems]);
   };
 
+  // SAVE ADDRESS -----------------------------------------
+  const saveCheckoutAddressToArray = async () => {
+  if (!auth.currentUser) return;
 
-  const handleProceedToPayment = () => {
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const snap = await getDoc(userRef);
+
+  let existing = snap.exists() ? snap.data().addresses || [] : [];
+
+  // Create unique id
+  const id = crypto.randomUUID();
+
+  // If no address exists → make this primary
+  const isPrimary = existing.length === 0 ? true : false;
+
+  // Create new address object
+  const newAddr = {
+    ...userInfo,
+    id,
+    isPrimary,
+  };
+
+  let updated = [...existing, newAddr];
+
+  // If first address, move it to top as primary
+  if (isPrimary) {
+    updated = [newAddr, ...existing.map(a => ({ ...a, isPrimary: false }))];
+  }
+
+  // Save to Firestore
+  await setDoc(
+    userRef,
+    { addresses: updated },
+    { merge: true }
+  );
+};
+
+
+
+  // PROCEED TO PAYMENT -----------------------------------
+  const handleProceedToPayment = async () => {
     const { name, phone, address, pincode, district, state } = userInfo;
 
     if (!name.trim()) return alert("Please enter your full name");
-
     if (!validateIndianPhone(phone))
-      return alert("❌ Please enter a valid Indian phone number");
-
+      return alert("Please enter a valid Indian phone number");
     if (!state.trim() || !district.trim())
-      return alert("❌ Invalid State or District based on Pincode");
-
+      return alert("Invalid State or District based on Pincode");
     if (!address.trim()) return alert("Please enter your full address");
-
     if (!/^[1-9][0-9]{5}$/.test(pincode))
-      return alert("❌ Enter valid 6-digit pincode");
+      return alert("Enter valid 6-digit pincode");
+
+    await saveCheckoutAddressToArray();
+    
 
     navigate("/payment", {
-      state: { cartItems, total, userInfo },
+      state: { cartItems: itemsToShow, total, userInfo },
     });
   };
 
+  // ---------------- UI ----------------
   return (
     <div className="checkout-container">
       <h2 className="checkout-title">Checkout</h2>
@@ -201,7 +309,7 @@ const Checkout = () => {
         <div className="summary-box">
           <h3>Order Summary</h3>
 
-          {cartItems.map((item) => (
+          {itemsToShow.map((item) => (
             <div className="summary-item" key={item.cartId}>
               <img src={item.image} alt="" />
 
@@ -212,25 +320,29 @@ const Checkout = () => {
                 </p>
                 <p className="sum-price">₹{item.variant?.offerPrice}</p>
 
-                <div className="qty-box">
-                  <button className="qty-btn" onClick={() => decreaseQty(item)}>
-                    -
-                  </button>
-                  <span className="qty-num">{item.quantity}</span>
-                  <button className="qty-btn" onClick={() => increaseQty(item)}>
-                    +
-                  </button>
-                </div>
+                {!buyNowData && (
+                  <div className="qty-box">
+                    <button className="qty-btn" onClick={() => decreaseQty(item)}>
+                      -
+                    </button>
+                    <span className="qty-num">{item.quantity}</span>
+                    <button className="qty-btn" onClick={() => increaseQty(item)}>
+                      +
+                    </button>
+                  </div>
+                )}
               </div>
 
-              <div className="remove-col">
-                <button
-                  className="sum-remove-btn"
-                  onClick={() => removeItem(item)}
-                >
-                  Remove
-                </button>
-              </div>
+              {!buyNowData && (
+                <div className="remove-col">
+                  <button
+                    className="sum-remove-btn"
+                    onClick={() => removeItem(item)}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
           ))}
 
@@ -239,9 +351,11 @@ const Checkout = () => {
             <span>₹ {total}</span>
           </div>
 
-          <button className="add-more-btn" onClick={() => navigate("/")}>
-            + Add More Items
-          </button>
+          {!buyNowData && (
+            <button className="add-more-btn" onClick={() => navigate("/")}>
+              + Add More Items
+            </button>
+          )}
         </div>
 
         {/* RIGHT BILLING */}
@@ -251,18 +365,14 @@ const Checkout = () => {
           <input
             placeholder="Full Name"
             value={userInfo.name}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, name: e.target.value })
-            }
+            onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
           />
 
           <input
             placeholder="Phone Number"
             maxLength={10}
             value={userInfo.phone}
-            onChange={(e) =>
-              setUserInfo({ ...userInfo, phone: e.target.value })
-            }
+            onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
           />
 
           <input

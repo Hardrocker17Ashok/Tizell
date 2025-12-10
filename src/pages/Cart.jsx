@@ -80,7 +80,7 @@ const Cart = () => {
   return (
     <div className="cart-page">
 
-    
+
       <div className="cart-left">
         <h2 className="cart-title">Shopping Cart</h2>
 
@@ -127,10 +127,24 @@ const Cart = () => {
 
         <button
           className="checkout-btn"
-          onClick={() => navigate("/checkout")}
+          onClick={() => {
+            if (cartItems.length === 0) {
+              alert("Please add at least one item to proceed!");
+              return;
+            }
+
+            navigate("/checkout")
+          }}
         >
           Proceed to Checkout
         </button>
+        <button
+          className="add-more-btn"
+          onClick={() => navigate("/")}
+        >
+          + Add More Items
+        </button>
+
       </div>
 
     </div>
