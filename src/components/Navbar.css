@@ -1,124 +1,172 @@
-.nav-container {
+/* MAIN NAVBAR */
+.pro-navbar {
   width: 100%;
-  height: 60px;
-  background: #111;
+  background: #ffffff;
+  padding: 12px 25px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 0 15px;
-  position: relative;
-  z-index: 9999;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  z-index: 2000;
 }
 
 /* LOGO */
-.nav-logo a {
-  font-size: 28px;
-  font-weight: 700;
-  color: #ffcc00;
-  text-decoration: none;
+.brand {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1a73e8;
+  cursor: pointer;
 }
 
-/* NAV LINKS */
-.nav-links {
+/* RIGHT SIDE ITEMS */
+.nav-right {
   display: flex;
   align-items: center;
-  list-style: none;
-  gap: 20px;
-  z-index: 9999;
+  gap: 22px;
 }
 
-.nav-links li a {
-  text-decoration: none;
-  color: white;
+/* TEXT MENU ITEMS */
+.nav-item {
   font-size: 17px;
-  transition: 0.2s;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.25s;
 }
 
-.nav-links li a:hover {
-  color: #ffcc00;
+.nav-item:hover {
+  color: #1a73e8;
+  transform: translateY(-2px);
 }
 
-.login-btn {
-  font-weight: 600;
-  color: #ffcc00 !important;
-}
-
-/* PROFILE DROPDOWN */
-.profile-wrapper {
+/* ICONS */
+.nav-icon-box {
   position: relative;
   cursor: pointer;
 }
 
-.profile-img {
-  width: 36px;
-  height: 36px;
+.icon {
+  font-size: 22px;
+}
+
+/* BADGE */
+.icon-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: #e53935;
+  color: white;
+  font-size: 11px;
+  padding: 2px 6px;
   border-radius: 50%;
-  border: 2px solid white;
+  font-weight: bold;
+}
+
+/* LOGIN BUTTON */
+.login-button {
+  padding: 7px 18px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
   cursor: pointer;
 }
 
+.login-button:hover {
+  background: #0b57be;
+}
+
+/* PROFILE AVATAR */
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid #e5e5e5;
+  transition: 0.25s;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.06);
+}
+
+/* DROPDOWN MENU */
 .profile-menu {
   position: absolute;
   right: 0;
-  top: 48px;
-  background: #000;
-  width: 170px;
-  padding: 12px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 14px rgba(0,0,0,0.35);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 99999;
-  color: white;
+  top: 55px;
+  width: 210px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  animation: fadeDrop 0.2s ease-out;
 }
 
-.profile-menu a {
-  text-decoration: none;
-  color: white;
-  font-weight: 500;
-}
-
-/* LOGOUT BUTTON */
-.logout-btn {
-  background: #f44336;
-  color: white;
-  padding: 8px;
+.profile-menu button {
+  width: 100%;
+  padding: 12px 18px;
   border: none;
-  border-radius: 6px;
+  background: none;
+  text-align: left;
   cursor: pointer;
-  text-align: center;
 }
 
-/* HAMBURGER BUTTON */
+.profile-menu button:hover {
+  background: #f4f4f4;
+}
+
+.logout {
+  color: red;
+  font-weight: 600;
+}
+
+/* MOBILE */
 .hamburger {
   display: none;
   font-size: 26px;
-  color: white;
   cursor: pointer;
 }
 
-/* MOBILE NAV */
-@media (max-width: 768px) {
-  .nav-links {
-    position: absolute;
-    top: 65px;
-    right: 0;
-    background: #222;
-    width: 220px;
-    flex-direction: column;
-    padding: 20px;
-    gap: 15px;
-    display: none;
-    border-left: 3px solid #ffcc00;
-    z-index: 9999;
-  }
+.mobile-menu {
+  display: none;
+}
 
-  .nav-links.open {
-    display: flex;
+@media (max-width: 850px) {
+  .nav-item,
+  .nav-icon-box,
+  .profile-avatar,
+  .login-button {
+    display: none;
   }
 
   .hamburger {
+    display: block;
+  }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    background: white;
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+  }
+
+  .mobile-menu.open {
     display: flex;
   }
+
+  .mobile-menu a {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+@keyframes fadeDrop {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
 }

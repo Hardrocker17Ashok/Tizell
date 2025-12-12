@@ -1,12 +1,11 @@
-// src/pages/VerifyAction.jsx
 import { useEffect, useState } from "react";
-import { 
-  applyActionCode, 
-  checkActionCode, 
-  verifyPasswordResetCode 
+import {
+  applyActionCode,
+  checkActionCode,
+  verifyPasswordResetCode
 } from "firebase/auth";
 
-import { auth } from "../firebase";  // ✅ ALWAYS USE SAME INSTANCE
+import { auth } from "../firebase";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import "../Auth.css";
 
@@ -64,7 +63,7 @@ const VerifyAction = () => {
   return (
     <div className="verify-container">
       <div className="verify-box">
-        
+
         {status === "checking" && (
           <>
             <div className="loader"></div>

@@ -17,7 +17,7 @@ import "./Checkout.css";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { state } = useLocation(); // ⭐ BUY NOW DATA RECEIVE
+  const { state } = useLocation(); 
   const buyNowData = state?.buyNow ? state : null;
 
   const [cartItems, setCartItems] = useState([]);
@@ -85,7 +85,7 @@ const Checkout = () => {
     return { valid: false, reason: "Repeated digits not allowed." };
   }
 
-  // 4. Reject common fake numbers
+
   const blacklist = [
     "1234567890",
     "0123456789",
@@ -101,19 +101,19 @@ const Checkout = () => {
     return { valid: false, reason: "This phone number looks fake." };
   }
 
-  // 5. Reject ascending sequences (2345678901)
+
   const ascending = "01234567890123456789";
   if (ascending.includes(phone)) {
     return { valid: false, reason: "Sequential numbers are invalid." };
   }
 
-  // 6. Reject descending sequences (9876543210)
+
   const descending = "98765432109876543210";
   if (descending.includes(phone)) {
     return { valid: false, reason: "Reverse sequential numbers are invalid." };
   }
 
-  // 7. Reject phone number if any digit repeats more than 5 times
+
   const counts = {};
   for (let digit of phone) {
     counts[digit] = (counts[digit] || 0) + 1;
@@ -122,7 +122,7 @@ const Checkout = () => {
     }
   }
 
-  // 8. Very strong final validation
+
   return { valid: true, reason: "Valid Indian phone number." };
 };
 
@@ -165,10 +165,10 @@ const Checkout = () => {
     return () => unsub();
   }, [navigate]);
 
-  // FETCH CART (ONLY IF NOT BUY NOW) ----------------------
+  // FETCH CART  ----------------------
   useEffect(() => {
     const fetchCart = async () => {
-      if (!auth.currentUser || buyNowData) return; // ⭐ BUY NOW → CART KO SKIP KARO
+      if (!auth.currentUser || buyNowData) return;
 
       const q = query(
         collection(db, "cart"),
@@ -208,7 +208,7 @@ const Checkout = () => {
     0
   );
 
-  // REMOVE / QTY HANDLERS (NOT USED IN BUY NOW) ----------
+  // REMOVE  ----------
   const removeItem = async (item) => {
     if (item.cartId === "buynow") return;
     await deleteDoc(doc(db, "cart", item.cartId));

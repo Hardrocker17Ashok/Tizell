@@ -54,12 +54,12 @@ const Signup = () => {
         password
       );
 
-      // ⬇️ Save Name in Firebase Auth
+      //  Save Name in Firebase Auth
       await updateProfile(userCredential.user, {
         displayName: name,
       });
 
-      // ⬇️ Save Name + Email in Firestore (users collection)
+
       await setDoc(doc(db, "users", userCredential.user.uid), {
         name: name,
         email: email,

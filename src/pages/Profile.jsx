@@ -32,51 +32,58 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="profile-container">
-      <h2 className="profile-title">My Profile</h2>
+  <div className="profile-container">
 
-      {/* User Details Box */}
-      <div className="profile-box">
-        <div className="avatar">
-          <span>👤</span>
-        </div>
-
-        <div className="profile-info">
-          <p><b>Name:</b> {user.name}</p>
-          <p><b>Email:</b> {user.email}</p>
-        </div>
+    {/* HEADER */}
+    <div className="profile-header">
+      <div className="avatar-large">👤</div>
+      <div>
+        <h2>{user.name}</h2>
+        <p>{user.email}</p>
       </div>
-
-      {/* Help Center */}
-      <div className="profile-box">
-        <h3>Help Center</h3>
-        <p><b>Customer Support:</b> +91 8829978572</p>
-        <p><b>Email:</b> team@tizell.com</p>
-        <p><b>Working Hours:</b> 9 AM – 7 PM (Mon–Sat)</p>
-      </div>
-
-      {/* Settings */}
-      <div className="profile-box">
-        <h3>Quick Links</h3>
-        <button className="profile-btn" onClick={() => navigate("/orders")}>
-          📦 My Orders
-        </button>
-
-        <button className="profile-btn" onClick={() => navigate("/cart")}>
-          🛒 My Cart
-        </button>
-
-        <button className="profile-btn" onClick={() => navigate("/addresses")}>
-          📍 Saved Addresses
-        </button>
-      </div>
-
-      {/* Logout Button */}
-      <button className="logout-btn" onClick={handleLogout}>
-        Logout
-      </button>
     </div>
-  );
+
+    {/* ACCOUNT CARDS */}
+    <div className="profile-sections">
+
+      {/* Account Settings */}
+      <div className="profile-card">
+        <h3>Account Settings</h3>
+
+        <div className="profile-item" onClick={() => navigate("/orders")}>
+          <span className="icon">📦</span> My Orders
+        </div>
+
+        <div className="profile-item" onClick={() => navigate("/addresses")}>
+          <span className="icon">📍</span> Saved Addresses
+        </div>
+
+        <div className="profile-item" onClick={() => navigate("/cart")}>
+          <span className="icon">🛒</span> My Cart
+        </div>
+      </div>
+
+      {/* Support */}
+      <div className="profile-card">
+        <h3>Help & Support</h3>
+
+        <div className="profile-support">
+          <p><b>Customer Support:</b> +91 8829978572</p>
+          <p><b>Email:</b> team@tizell.com</p>
+          <p><b>Working Hours:</b> 9 AM – 7 PM (Mon–Sat)</p>
+        </div>
+      </div>
+
+      {/* Logout */}
+      <div className="profile-card logout-card" onClick={handleLogout}>
+        <span className="icon-red">🚪</span>
+        <p className="logout-text">Logout</p>
+      </div>
+
+    </div>
+  </div>
+);
+
 };
 
 export default Profile;

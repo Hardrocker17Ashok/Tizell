@@ -1,12 +1,79 @@
-.banner-container {
+/* MAIN WRAPPER */
+.banner-wrapper {
   width: 100%;
-  height: 300px;
-  margin-top: 0px;
+  margin: 0 auto;
+  margin-top: 10px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0px 6px 25px rgba(0, 0, 0, 0.18);
 }
 
+/* SWIPER */
+.banner-swiper {
+  width: 100%;
+  height: 340px;
+  border-radius: 18px;
+}
+
+.banner-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* IMAGE STYLING */
 .banner-img {
   width: 100%;
-  height: 300px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 15px;
+  filter: brightness(92%);
+  transition: 0.4s ease-in-out;
+}
+
+/* HOVER ZOOM EFFECT */
+.banner-slide:hover .banner-img {
+  transform: scale(1.03);
+  filter: brightness(100%);
+}
+
+/* OVERLAY FOR PROFESSIONAL LOOK */
+.banner-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.35),
+    rgba(0, 0, 0, 0.05)
+  );
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* PAGINATION DOTS */
+.swiper-pagination-bullet {
+  background: #ffffff;
+  opacity: 0.7;
+  width: 10px;
+  height: 10px;
+}
+
+.swiper-pagination-bullet-active {
+  background: #1a73e8;
+  width: 22px;
+  border-radius: 10px;
+  opacity: 1;
+  transition: 0.3s;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width: 768px) {
+  .banner-swiper {
+    height: 220px;
+  }
+
+  .banner-wrapper {
+    border-radius: 12px;
+  }
 }

@@ -14,9 +14,28 @@ const Navbar = () => {
   const [cartCount, setCartCount] = useState(0);
   const [user, setUser] = useState(null);
 
+  const [unread, setUnread] = useState(0);
+
   const profileRef = useRef(null);
 
-  // ------------------ AUTH LISTENER ------------------
+  // ---------------- NOTIFICATION LISTENER ----------------
+  useEffect(() => {
+    if (!auth.currentUser) return;
+
+    const q = query(
+      collection(db, "notifications"),
+      where("userId", "==", auth.currentUser.uid),
+      where("read", "==", false)
+    );
+
+    const unsub = onSnapshot(q, (snap) => {
+      setUnread(snap.size);
+    });
+
+    return () => unsub();
+  }, []);
+
+  // ---------------- AUTH LISTENER ----------------
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -26,7 +45,7 @@ const Navbar = () => {
     return () => unsub();
   }, []);
 
-  // ------------------ CART COUNT LISTENER ------------------
+  // ---------------- CART LISTENER ----------------
   useEffect(() => {
     if (!user) return;
 
@@ -44,13 +63,10 @@ const Navbar = () => {
     return () => unsub();
   }, [user]);
 
-  // ------------------ FIXED CLICK OUTSIDE MENU ------------------
+  // ---------------- CLOSE PROFILE IF CLICKED OUTSIDE ----------------
   useEffect(() => {
     const closeMenu = (e) => {
-      // If menu is closed → no need to check
       if (!profileOpen) return;
-
-      // If clicked outside profile wrapper → close menu
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
       }
@@ -60,7 +76,7 @@ const Navbar = () => {
     return () => document.removeEventListener("click", closeMenu);
   }, [profileOpen]);
 
-  // ------------------ LOGOUT ------------------
+  // ---------------- LOGOUT ----------------
   const logoutHandler = async () => {
     await signOut(auth);
     setCartCount(0);
@@ -68,54 +84,88 @@ const Navbar = () => {
     navigate("/");
   };
 
-  return (
-    <nav className="nav-container">
-      
-      {/* LOGO */}
-      <div className="nav-logo">
-        <Link to="/">Tizell</Link>
+return (
+  <nav className="pro-navbar">
+
+    {/* LEFT LOGO */}
+    <div className="nav-left" onClick={() => navigate("/")}>
+      <h1 className="brand">Tizell</h1>
+    </div>
+
+    {/* RIGHT SIDE MENU */}
+    <div className="nav-right">
+
+      <span className="nav-item" onClick={() => navigate("/")}>Home</span>
+
+      {user && (
+        <span className="nav-item" onClick={() => navigate("/orders")}>
+          Orders
+        </span>
+      )}
+
+      {user && (
+        <div className="nav-icon-box" onClick={() => navigate("/notifications")}>
+          <span className="icon">🔔</span>
+          {unread > 0 && <span className="icon-badge">{unread}</span>}
+        </div>
+      )}
+
+      <div className="nav-icon-box" onClick={() => navigate("/cart")}>
+        <span className="icon">🛒</span>
+        {cartCount > 0 && <span className="icon-badge">{cartCount}</span>}
       </div>
 
-      {/* NAVIGATION LINKS */}
-      <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
-        <li><Link to="/">Home</Link></li>
-        {user && <li><Link to="/orders">Orders</Link></li>}
-        <li><Link to="/cart">Cart ({cartCount})</Link></li>
+      {/* LOGIN / PROFILE */}
+      {!user ? (
+        <button className="login-button" onClick={() => navigate("/login")}>
+          Login
+        </button>
+      ) : (
+        <div className="profile-wrapper" ref={profileRef}>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            className="profile-avatar"
+            onClick={(e) => {
+              e.stopPropagation();
+              setProfileOpen(!profileOpen);
+            }}
+          />
 
-        {/* LOGIN / PROFILE */}
-        {!user ? (
-          <li><Link to="/login" className="login-btn">Login</Link></li>
-        ) : (
-          <li className="profile-wrapper" ref={profileRef}>
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-              className="profile-img"
-              alt="profile"
-              onClick={(e) => {
-                e.stopPropagation();
-                setProfileOpen((prev) => !prev);
-              }}
-            />
+          {profileOpen && (
+            <div className="profile-menu" onClick={(e) => e.stopPropagation()}>
+              <p className="menu-header">Hello, {user.displayName || "User"}</p>
+              <hr />
+              <button onClick={() => navigate("/profile")}>My Profile</button>
+              <button onClick={() => navigate("/orders")}>My Orders</button>
+              <button onClick={() => navigate("/notifications")}>Notifications</button>
+              <button className="logout" onClick={logoutHandler}>Logout</button>
+            </div>
+          )}
+        </div>
+      )}
 
-            {profileOpen && (
-              <div className="profile-menu" onClick={(e) => e.stopPropagation()}>
-                <Link to="/profile">My Profile</Link>
-                <Link to="/orders">My Orders</Link>
-                <button className="logout-btn" onClick={logoutHandler}>
-                  Logout
-                </button>
-              </div>
-            )}
-          </li>
-        )}
-      </ul>
-
-      {/* MOBILE BURGER MENU */}
+      {/* MOBILE BURGER */}
       <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
         <FaBars />
       </div>
-    </nav>
-  );
+
+    </div>
+
+    {/* MOBILE MENU */}
+    <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+      <Link to="/">Home</Link>
+      {user && <Link to="/orders">Orders</Link>}
+      {user && <Link to="/notifications">Notifications</Link>}
+      <Link to="/cart">Cart</Link>
+      {!user && <Link to="/login">Login</Link>}
+    </div>
+  </nav>
+);
+
+
+
+
+
 };
 
 export default Navbar;

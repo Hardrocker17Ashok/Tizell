@@ -6,7 +6,7 @@ import "../Auth.css";
 
 const Forgot = () => {
   const [email, setEmail] = useState("");
-  const navigate = useNavigate(); // <-- CORRECT
+  const navigate = useNavigate(); 
 
   const handleReset = async () => {
     if (!email.includes("@")) {
@@ -20,14 +20,14 @@ const Forgot = () => {
       });
 
       alert("If this email exists, a reset link has been sent.");
-      navigate("/login");   // <-- CORRECT REDIRECT
+      navigate("/login");   
 
     } catch (error) {
       console.log("Reset error:", error.code);
 
       // Even on error
       alert("If this email exists, a reset link has been sent.");
-      navigate("/login");   // <-- STILL REDIRECT
+      navigate("/login");   
     }
   };
 

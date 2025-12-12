@@ -4,114 +4,145 @@ import "./Payment.css";
 import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 
-
 const Payment = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  // Total amount coming from checkout
   const total = state?.total || 0;
-
   const [paymentMethod, setPaymentMethod] = useState(null);
-const handleProceed = async () => {
-  if (!paymentMethod) {
-    alert("Please select a payment method");
-    return;
-  }
 
-  // prepare order object
-  const orderData = {
-    userId: auth.currentUser.uid,
-    items: state.cartItems,
-    total: total,
-    userInfo: state.userInfo,
-    paymentMethod,
-    createdAt: Date.now(),
+  const DELIVERY_CHARGE = 90;
+  const isCOD = paymentMethod === "cod";
+
+
+
+  const handleProceed = async () => {
+    if (!paymentMethod) {
+      alert("Please select a payment method");
+      return;
+    }
+
+    // Normalize address format
+    const addressData = {
+      name: state.userInfo?.name || "",
+      phone: state.userInfo?.phone || "",
+      address: state.userInfo?.address || "",
+      district: state.userInfo?.district || "",
+      state: state.userInfo?.state || "",
+      pincode: state.userInfo?.pincode || "",
+    };
+
+    //  REQUIRED ORDER STRUCTURE WITH "status"
+    const orderData = {
+      userId: auth.currentUser.uid,
+      items: state.cartItems,
+      total: isCOD ? total + DELIVERY_CHARGE : total,
+      address: state.userInfo,
+      paymentMethod,
+      deliveryCharge: isCOD ? DELIVERY_CHARGE : 0,
+      paymentStatus: isCOD ? "Pending" : "Paid",
+      status: "Pending",
+      createdAt: Date.now(),
+    };
+
+
+    // SAVE ORDER
+    const orderRef = await addDoc(collection(db, "orders"), orderData);
+
+    // REMOVE ITEMS FROM CART 
+    for (let item of state.cartItems) {
+      if (item.cartId !== "buynow") {
+        await deleteDoc(doc(db, "cart", item.cartId));
+      }
+    }
+
+    // REDIRECT TO SUCCESS PAGE
+    navigate("/order-success", {
+      state: {
+        message:
+          paymentMethod === "cod"
+            ? "Cash on Delivery selected. Order placed!"
+            : "Online Payment Successful!",
+        orderId: orderRef.id,
+      },
+    });
   };
-
-  
-  const orderRef = await addDoc(collection(db, "orders"), orderData);
-
-  
-  state.cartItems.forEach(async (item) => {
-    await deleteDoc(doc(db, "cart", item.cartId));
-  });
-
-
-  navigate("/order-success", {
-    state: {
-      message:
-        paymentMethod === "cod"
-          ? "Cash on Delivery selected. Order placed!"
-          : "Online Payment Successful!",
-      orderId: orderRef.id,
-    },
-  });
-};
-
   return (
-    <div className="pay-container">
-      <h2 className="pay-title">Select Payment Method</h2>
+    <div className="payment-container">
 
-      <div className="pay-box">
+      <div className="payment-card">
+        <h2 className="section-title">Select Payment Method</h2>
 
-        {/* COD OPTION */}
-        <div
-          className={`pay-option ${
-            paymentMethod === "cod" ? "selected" : ""
-          }`}
-          onClick={() => {
-            if (total <= 2000) {
-              setPaymentMethod("cod");
-            }
-          }}
-        >
-          <input
-            type="radio"
-            checked={paymentMethod === "cod"}
-            readOnly
-          />
-          <div>
-            <h3>Cash on Delivery</h3>
-            <p>Pay when the item is delivered.</p>
+        {/* PAYMENT OPTIONS */}
+        <div className="payment-options">
+
+          {/* COD */}
+          <div
+            className={`payment-option ${paymentMethod === "cod" ? "active" : ""} 
+            ${total > 2000 ? "disabled" : ""}`}
+            onClick={() => total <= 2000 && setPaymentMethod("cod")}
+          >
+            <div className="option-left">
+              <span className="icon">💵</span>
+              <div>
+                <h3>Cash on Delivery</h3>
+                <p>Pay when your order arrives</p>
+              </div>
+            </div>
+
+            {total > 2000 && <span className="tag-red">Not available above ₹2000</span>}
+            <input type="radio" checked={paymentMethod === "cod"} readOnly />
           </div>
 
-          {total > 2000 && (
-            <span className="disabled-tag">Not Available over ₹2000</span>
-          )}
-        </div>
+          {/* ONLINE PAYMENT */}
+          <div
+            className={`payment-option ${paymentMethod === "online" ? "active" : ""}`}
+            onClick={() => setPaymentMethod("online")}
+          >
+            <div className="option-left">
+              <span className="icon">💳</span>
+              <div>
+                <h3>Online Payment</h3>
+                <p>UPI • Cards • Netbanking • Wallets</p>
+              </div>
+            </div>
 
-        {/* ONLINE PAYMENT OPTION */}
-        <div
-          className={`pay-option ${
-            paymentMethod === "online" ? "selected" : ""
-          }`}
-          onClick={() => setPaymentMethod("online")}
-        >
-          <input
-            type="radio"
-            checked={paymentMethod === "online"}
-            readOnly
-          />
-          <div>
-            <h3>Online Payment</h3>
-            <p>UPI • Netbanking • Cards • Wallets</p>
+            <input type="radio" checked={paymentMethod === "online"} readOnly />
           </div>
         </div>
 
-        {/* SUMMARY BOX */}
-        <div className="summary">
+        {/* ORDER SUMMARY */}
+        <div className="summary-card">
           <h3>Order Summary</h3>
-          <p>Total Amount:</p>
-          <h2>₹{total}</h2>
+
+          <div className="row">
+            <span>Subtotal</span>
+            <b>₹{total}</b>
+          </div>
+
+          <div className="row">
+            <span>Delivery Charge</span>
+            <b style={{ color: isCOD ? "#d9534f" : "#28a745" }}>
+              {isCOD ? `₹${DELIVERY_CHARGE}` : "FREE"}
+            </b>
+          </div>
+
+          <hr />
+
+          <div className="row total">
+            <span>Total Payable</span>
+            <h2>₹{isCOD ? total + DELIVERY_CHARGE : total}</h2>
+          </div>
         </div>
 
+        {/* BUTTON */}
         <button className="pay-btn" onClick={handleProceed}>
-          Proceed
+          Proceed to Pay
         </button>
       </div>
     </div>
   );
+
 };
 
 export default Payment;

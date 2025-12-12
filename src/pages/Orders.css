@@ -22,7 +22,7 @@
   border-radius: 10px;
   margin-bottom: 25px;
   border: 1px solid #ddd;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 .order-header {
@@ -71,17 +71,70 @@
   font-weight: bold;
 }
 
-.order-detail-btn {
-  margin-top: 10px;
-  padding: 10px 14px;
-  background: #111;
+
+
+.order-status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  margin-top: 8px;
 }
 
-.order-detail-btn:hover {
-  background: #ffcc00;
-  color: black;
+/* COLORS */
+.status-pending {
+  background: #f39c12;
+}
+
+.status-shipped {
+  background: #3498db;
+}
+
+.status-out-for-delivery {
+  background: #9b59b6;
+}
+
+.status-delivered {
+  background: #2ecc71;
+}
+
+.status-cancelled {
+  background: #e74c3c;
+}
+
+
+.payment-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+.payment-paid {
+  background: #2ecc71;
+  color: white;
+}
+
+.payment-pending {
+  background: #e67e22;
+  color: white;
+}
+
+.order-card p b {
+  color: #444;
+}
+
+.order-address h4 {
+  margin-bottom: 6px;
+  color: #222;
+}
+
+.order-item-img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
 }

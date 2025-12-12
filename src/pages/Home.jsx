@@ -4,12 +4,24 @@ import BannerSlider from "../components/BannerSlider";
 import "./Home.css";
 
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
+import { db, auth } from "../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+  const [userName, setUserName] = useState("");
 
+  //  GET LOGGED-IN USER NAME
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUserName(user.displayName || "User");
+      }
+    });
+    return () => unsub();
+  }, []);
 
+  //  FETCH PRODUCTS
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -27,7 +39,7 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  // ✅ scroll function
+  //  SCROLL TO CATEGORY
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
     if (section) {
@@ -38,18 +50,17 @@ const Home = () => {
   return (
     <div className="home">
 
-      {/* SPECIAL TEXT SECTION */}
-      <div className="special-text">
-        <h1>
-          Welcome to <span>MyShop</span>
-        </h1>
-        <p>Premium Products • Best Prices • Fast Delivery</p>
+      {/*  PROFESSIONAL WELCOME TEXT */}
+      <div className="welcome-box">
+        <p className="hello-text">Hello, {userName} 👋</p>
+        <h1 className="welcome-title">Welcome to <span>MyShop</span></h1>
+        <p className="sub-text">Premium Products • Best Prices • Fast Delivery</p>
       </div>
 
-      {/* BANNER */}
+      {/*  BANNER SECTION */}
       <BannerSlider />
 
-      {/* CATEGORIES */}
+      {/*  CATEGORIES */}
       <div className="categories-container">
         <h2 className="category-title">Shop by Categories</h2>
 
@@ -92,13 +103,13 @@ const Home = () => {
             onClick={() => scrollToSection("jap-counter")}
           >
             <img src="pexels-rdne-8710759.jpg" alt="JapCounter" />
-            <p>JapCounter</p>
+            <p>Jap Counter</p>
           </div>
 
         </div>
       </div>
 
-      {/* CHIMNEY SECTION */}
+      {/*  PRODUCT SECTIONS */}
       <h2 id="chimney" className="section-title">Chimney Products</h2>
       <div className="product-grid">
         {products
@@ -108,7 +119,6 @@ const Home = () => {
           ))}
       </div>
 
-      {/* BLANKET SECTION */}
       <h2 id="blanket" className="section-title">Blankets</h2>
       <div className="product-grid">
         {products
@@ -118,7 +128,6 @@ const Home = () => {
           ))}
       </div>
 
-      {/* WATCH SECTION */}
       <h2 id="watch" className="section-title">Watches</h2>
       <div className="product-grid">
         {products
@@ -128,7 +137,6 @@ const Home = () => {
           ))}
       </div>
 
-      {/* MINI BANK SECTION */}
       <h2 id="mini-bank" className="section-title">Mini Bank</h2>
       <div className="product-grid">
         {products
@@ -138,7 +146,6 @@ const Home = () => {
           ))}
       </div>
 
-      {/* JAP COUNTER SECTION */}
       <h2 id="jap-counter" className="section-title">Jap Counter</h2>
       <div className="product-grid">
         {products

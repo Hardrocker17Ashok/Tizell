@@ -14,22 +14,26 @@ const BannerSlider = () => {
   ];
 
   return (
-    <div className="banner-container">
+    <div className="banner-wrapper">
       <Swiper
         modules={[Autoplay, Pagination]}
-        autoplay={{ delay: 2500 }}
+        autoplay={{ delay: 2500, disableOnInteraction: false }}
         pagination={{ clickable: true }}
         loop={true}
         className="banner-swiper"
       >
         {banners.map((img, index) => (
           <SwiperSlide key={index}>
-            <img src={img} className="banner-img" alt="Banner" />
+            <div className="banner-slide">
+              <img src={img} alt="banner" className="banner-img" />
+              <div className="banner-overlay"></div>
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
     </div>
   );
+
 };
 
 export default BannerSlider;

@@ -40,7 +40,7 @@ const ProductDetails = () => {
         image: product.image,
         addedAt: Date.now(),
       });
-      alert("Added to cart");
+    
     } catch (error) {
       console.error(error);
     }
@@ -150,7 +150,7 @@ const ProductDetails = () => {
         <p className="pd-stock">In Stock</p>
 
         <div className="pd-delivery">
-          <p>🚚 Free Delivery Tomorrow</p>
+          <p>🚚 Free Delivery</p>
           <p>📍 Delivered to your location</p>
         </div>
 
