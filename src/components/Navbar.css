@@ -92,35 +92,44 @@
   transform: scale(1.06);
 }
 
-/* DROPDOWN MENU */
-.profile-menu {
+/* DESKTOP DROPDOWN (BUTTON STYLE LIKE MOBILE) */
+.desktop-dropdown {
   position: absolute;
   right: 0;
   top: 55px;
   width: 210px;
   background: #ffffff;
   border-radius: 12px;
-  padding: 12px 0;
+  padding: 8px 0;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   animation: fadeDrop 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
-.profile-menu button {
+.desktop-dropdown button {
   width: 100%;
   padding: 12px 18px;
-  border: none;
   background: none;
+  border: none;
   text-align: left;
+  font-size: 16px;
   cursor: pointer;
+  transition: 0.2s;
 }
 
-.profile-menu button:hover {
+.desktop-dropdown button:hover {
   background: #f4f4f4;
 }
 
-.logout {
+.desktop-dropdown .logout {
   color: red;
   font-weight: 600;
+}
+
+/* OLD DROPDOWN (NOT USED ANYMORE) */
+.profile-menu {
+  display: none !important;
 }
 
 /* HAMBURGER */

@@ -1,17 +1,26 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import "./Admin.css";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const logout = () => {
-    localStorage.removeItem("admin"); 
+    localStorage.removeItem("admin");
     navigate("/admin/login");
   };
 
   return (
     <div className="admin-layout">
-      <aside className="admin-sidebar">
+
+      {/* MOBILE TOGGLE BUTTON */}
+      <button className="admin-hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+        ☰
+      </button>
+
+      {/* SIDEBAR */}
+      <aside className={`admin-sidebar ${menuOpen ? "open" : ""}`}>
         <h2 className="admin-title">Tizell Admin</h2>
 
         <Link to="/admin/dashboard" className="admin-link">Dashboard</Link>
@@ -23,6 +32,7 @@ export default function AdminLayout() {
         </button>
       </aside>
 
+      {/* MAIN */}
       <main className="admin-content">
         <Outlet />
       </main>

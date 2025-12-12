@@ -75,3 +75,30 @@
   font-weight: 700;
   color: #333;
 }
+
+.dash-container {
+  width: 100%;
+  padding: 20px;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.dash-card {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+}
+
+@media(max-width:768px){
+  .dash-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 15px;
+  }
+}
