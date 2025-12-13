@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./Payment.css";
-import { addDoc, collection, deleteDoc, doc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, setDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 
 const Payment = () => {
@@ -44,6 +44,17 @@ const Payment = () => {
       status: "Pending",
       createdAt: Date.now(),
     };
+
+    await setDoc(
+      doc(db, "users", auth.currentUser.uid),
+      {
+        name: state.userInfo.name,
+        email: auth.currentUser.email,
+        phone: state.userInfo.phone,
+      },
+      { merge: true } 
+    );
+
 
 
     // SAVE ORDER
