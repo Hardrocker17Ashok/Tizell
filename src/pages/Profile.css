@@ -106,3 +106,47 @@
   font-weight: 600;
   color: #d9534f;
 }
+
+/* DROPDOWN HEADER */
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ARROW */
+.arrow {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.arrow.open {
+  transform: rotate(180deg);
+}
+
+/* DROPDOWN CONTENT */
+.dropdown-content {
+  margin-top: 10px;
+}
+
+/* POLICY LINKS */
+.profile-link {
+  display: block;
+  padding: 12px 0;
+  font-size: 16px;
+  color: #333;
+  text-decoration: none;
+  border-bottom: 1px solid #eee;
+  transition: 0.25s;
+}
+
+.profile-link:last-child {
+  border-bottom: none;
+}
+
+.profile-link:hover {
+  color: #1a73e8;
+  transform: translateX(3px);
+}

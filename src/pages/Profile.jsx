@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const Profile = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const [showPolicies, setShowPolicies] = useState(false);
+
 
   // Get user details
   useEffect(() => {
@@ -62,6 +64,69 @@ const Profile = () => {
           <span className="icon">🛒</span> My Cart
         </div>
       </div>
+
+      {/* Legal & Policies Dropdown */}
+<div className="profile-card">
+  <h3
+    className="dropdown-header"
+    onClick={() => setShowPolicies(!showPolicies)}
+  >
+    Legal & Policies
+    <span className={`arrow ${showPolicies ? "open" : ""}`}>⌄</span>
+  </h3>
+
+  {showPolicies && (
+    <div className="dropdown-content">
+
+      <a
+        className="profile-link"
+        href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/refund"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Cancellation & Refund
+      </a>
+
+      <a
+        className="profile-link"
+        href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/terms"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Terms & Conditions
+      </a>
+
+      <a
+        className="profile-link"
+        href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/shipping"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Shipping Policy
+      </a>
+
+      <a
+        className="profile-link"
+        href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/privacy"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Privacy Policy
+      </a>
+
+      <a
+        className="profile-link"
+        href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/contact_us"
+        target="_blank"
+        rel="noreferrer"
+      >
+        Contact Us
+      </a>
+
+    </div>
+  )}
+</div>
+
 
       {/* Support */}
       <div className="profile-card">
