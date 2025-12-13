@@ -1,28 +1,34 @@
 import "./Footer.css";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaWhatsapp,
+  FaGoogle,
+  FaYoutube,
+} from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="mega-footer">
-      <div className="mega-footer-inner">
+    <footer className="pro-footer">
+      <div className="pro-footer-container">
 
-        <div className="mega-footer-brand">
-          <h2>Tizell</h2>
-          <p>
-            © {new Date().getFullYear()} Tizell.  
-            All rights reserved.
-          </p>
-          <p className="trust">
-            Secure and compliant payments powered by Razorpay
-          </p>
+        {/* SOCIAL ICONS */}
+        <div className="social-row">
+          <span className="social-icon"><FaFacebookF /></span>
+          <span className="social-icon"><FaInstagram /></span>
+          <span className="social-icon"><FaWhatsapp /></span>
+          <span className="social-icon"><FaGoogle /></span>
+          <span className="social-icon"><FaYoutube /></span>
         </div>
 
-        <div className="mega-footer-links">
+        {/* POLICY LINKS (YOUR LINKS) */}
+        <div className="footer-nav">
           <a
             href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/refund"
             target="_blank"
             rel="noreferrer"
           >
-            Cancellation & Refund Policy
+            Cancellation & Refund
           </a>
 
           <a
@@ -56,6 +62,11 @@ const Footer = () => {
           >
             Contact Us
           </a>
+        </div>
+
+        {/* COPYRIGHT */}
+        <div className="footer-copy">
+          © {new Date().getFullYear()} Tizell. All Rights Reserved.
         </div>
 
       </div>
