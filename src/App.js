@@ -28,7 +28,7 @@ import ProtectedAdminRoute from "./admin/ProtectedAdminRoute";
 import DashBoard from "./admin/DashBoard";
 import AdminOrders from "./admin/Orders";
 import Customers from "./admin/Customers";
-
+import AdminNotifications from "./admin/AdminNotifications";
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -43,7 +43,8 @@ function Layout() {
     "/admin/dashboard",
     "/admin/orders",
     "/admin/customers",
-    "/admin/settings"
+    "/admin/settings",
+    "/admin/notifications"
   ];
 
   const hideNavbar = hideNavbarOn.includes(location.pathname);
@@ -75,6 +76,7 @@ function Layout() {
           <Route path="dashboard" element={<DashBoard />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<Customers />} />
+          <Route path="notifications" element={<AdminNotifications />} />
         </Route>
 
         {/* USER ROUTES */}

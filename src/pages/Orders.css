@@ -138,3 +138,40 @@
   height: 70px;
   object-fit: contain;
 }
+
+/* Cancel Order Button */
+.cancel-btn {
+  margin-left: 12px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff4d4d, #ff1a1a);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(255, 77, 77, 0.35);
+}
+
+/* Hover effect */
+.cancel-btn:hover {
+  background: linear-gradient(135deg, #e60000, #cc0000);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(230, 0, 0, 0.45);
+}
+
+/* Click effect */
+.cancel-btn:active {
+  transform: scale(0.96);
+}
+
+/* Mobile friendly */
+@media (max-width: 600px) {
+  .cancel-btn {
+    margin-top: 6px;
+    display: inline-block;
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+}

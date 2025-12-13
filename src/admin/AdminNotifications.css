@@ -1,0 +1,26 @@
+.admin-notifications {
+  padding: 20px;
+}
+
+.note-card {
+  padding: 14px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.note-card.unread {
+  background: #fff1f1;
+  border-left: 4px solid red;
+  font-weight: 600;
+}
+
+.note-card.read {
+  background: #f5f5f5;
+  color: #777;
+}
+
+.note-card:hover {
+  transform: scale(1.01);
+}

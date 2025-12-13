@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  updateDoc,
+  doc,
+  addDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "./Orders.css";
 
@@ -9,25 +18,69 @@ const Orders = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      if (!auth.currentUser) return;
+    if (!auth.currentUser) return;
 
-      const q = query(
-        collection(db, "orders"),
-        where("userId", "==", auth.currentUser.uid)
-      );
+    const q = query(
+      collection(db, "orders"),
+      where("userId", "==", auth.currentUser.uid)
+    );
 
-      const snap = await getDocs(q);
-      const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const unsubscribe = onSnapshot(q, (snap) => {
+      const list = snap.docs.map((d) => ({
+        id: d.id,
+        ...d.data(),
+      }));
       setOrders(list);
-    };
+    });
 
-    fetchOrders();
+    return () => unsubscribe();
   }, []);
+
+
+  const cancelOrder = async (order) => {
+    const confirm = window.confirm(
+      "Are you sure you want to cancel this order?"
+    );
+
+    if (!confirm) return;
+
+    // ❌ Block cancellation if already delivered / out for delivery
+    if (
+      order.status === "Delivered" ||
+      order.status === "Out for Delivery"
+    ) {
+      alert("Order cannot be cancelled at this stage.");
+      return;
+    }
+
+    // 1️⃣ Update order status
+    await updateDoc(doc(db, "orders", order.id), {
+      status: "Cancelled",
+    });
+
+    // 2️⃣ Notify customer
+    await addDoc(collection(db, "notifications"), {
+      userId: order.userId,
+      title: "❌ Order Cancelled",
+      message: `Your order #${order.id} has been cancelled successfully.`,
+      read: false,
+      createdAt: Date.now(),
+    });
+
+    // 3️⃣ Notify admin
+    await addDoc(collection(db, "adminNotifications"), {
+      type: "ORDER_CANCELLED",
+      orderId: order.id,
+      userId: order.userId,
+      message: `Order #${order.id} was cancelled by customer.`,
+      read: false,
+      createdAt: Date.now(),
+    });
+
+  };
 
   return (
     <div className="orders-container">
-
       <h2 className="orders-title">Your Orders</h2>
 
       {orders.length === 0 && (
@@ -36,61 +89,85 @@ const Orders = () => {
 
       {orders.map((order) => (
         <div className="order-card" key={order.id}>
-
           {/* -------- ORDER HEADER -------- */}
           <div className="order-header">
             <div>
-              <p><b>Order ID:</b> {order.id}</p>
-              <p><b>Date:</b> {new Date(order.createdAt).toLocaleString()}</p>
+              <p>
+                <b>Order ID:</b> {order.id}
+              </p>
+              <p>
+                <b>Date:</b>{" "}
+                {new Date(order.createdAt).toLocaleString()}
+              </p>
             </div>
 
             <div className="order-total">
-              <p><b>Total Amount:</b></p>
+              <p>
+                <b>Total Amount:</b>
+              </p>
               <h3>₹{order.total}</h3>
+
               {order.deliveryCharge > 0 && (
                 <p style={{ color: "red" }}>
                   + ₹{order.deliveryCharge} Delivery Charge (COD)
                 </p>
               )}
-
             </div>
           </div>
 
-          {/* -------- NEW STATUS FIELDS -------- */}
-          {/* STATUS BADGE */}
+          {/* -------- STATUS -------- */}
           <p>
-            <b>Status:</b>
-            <span className={`order-status-badge status-${order.status?.toLowerCase().replace(/ /g, "-")}`}>
+            <b>Status:</b>{" "}
+            <span
+              className={`order-status-badge status-${order.status
+                ?.toLowerCase()
+                .replace(/ /g, "-")}`}
+            >
               {order.status}
+              {order.status !== "Cancelled" &&
+                order.status !== "Delivered" &&
+                order.status !== "Out for Delivery" && (
+                  <button
+                    className="cancel-btn"
+                    onClick={() => cancelOrder(order)}
+                  >
+                    Cancel Order
+                  </button>
+                )}
+
             </span>
           </p>
 
-          {/* PAYMENT BADGE */}
+          {/* -------- PAYMENT -------- */}
           <p>
-            <b>Payment:</b>
-            <span className={`payment-badge payment-${order.paymentStatus?.toLowerCase()}`}>
+            <b>Payment:</b>{" "}
+            <span
+              className={`payment-badge payment-${order.paymentStatus?.toLowerCase()}`}
+            >
               {order.paymentStatus}
             </span>
           </p>
-
 
           {/* -------- DELIVERY ADDRESS -------- */}
           <div className="order-address">
             <h4>Delivery Address</h4>
 
-            <p><b>{order.address?.name}</b></p>
+            <p>
+              <b>{order.address?.name}</b>
+            </p>
             <p>{order.address?.phone}</p>
-            <p>{order.address?.district}, {order.address?.state}</p>
+            <p>
+              {order.address?.district}, {order.address?.state}
+            </p>
             <p>{order.address?.address}</p>
             <p>Pincode: {order.address?.pincode}</p>
           </div>
 
           <h4 style={{ marginTop: 15 }}>Items:</h4>
 
-          {/* -------- ORDERED ITEMS LIST -------- */}
+          {/* -------- ORDER ITEMS -------- */}
           {order.items.map((item, index) => (
             <div className="order-item" key={index}>
-
               <img
                 src={item.image}
                 alt=""
@@ -98,19 +175,26 @@ const Orders = () => {
               />
 
               <div className="order-item-details">
-                <p className="item-name">{item.productName}</p>
+                <p className="item-name">
+                  {item.productName}
+                </p>
 
-                <p>Variant: <b>{item.variant?.label}</b></p>
-                <p>Qty: {item.quantity} × ₹{item.variant?.offerPrice}</p>
+                <p>
+                  Variant: <b>{item.variant?.label}</b>
+                </p>
+                <p>
+                  Qty: {item.quantity} × ₹
+                  {item.variant?.offerPrice}
+                </p>
 
                 <p className="order-subtotal">
-                  Subtotal: ₹{item.quantity * item.variant?.offerPrice}
+                  Subtotal: ₹
+                  {item.quantity *
+                    item.variant?.offerPrice}
                 </p>
               </div>
             </div>
           ))}
-
-
         </div>
       ))}
     </div>
