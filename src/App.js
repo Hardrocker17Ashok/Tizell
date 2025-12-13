@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer"; // ✅ ONLY NEW LINE
 
 // USER PAGES
 import Home from "./pages/Home";
@@ -19,7 +20,6 @@ import Verified from "./pages/Verified";
 import Profile from "./pages/Profile";
 import AddressPage from "./pages/Addresses";
 import Notifications from "./pages/Notifications";
-
 
 // ADMIN PAGES
 import AdminLayout from "./admin/AdminLayout";
@@ -48,7 +48,7 @@ function Layout() {
 
   const hideNavbar = hideNavbarOn.includes(location.pathname);
 
-  //  SECRET ADMIN ACCESS FIX
+  // SECRET ADMIN ACCESS FIX
   useEffect(() => {
     if (location.search.includes("admin")) {
       navigate("/admin/login", { replace: true });
@@ -96,10 +96,12 @@ function Layout() {
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/add-variants" element={<AddVariants />} />
       </Routes>
+
+      {/* ✅ FOOTER ALWAYS VISIBLE (EVEN EMPTY PAGES) */}
+      <Footer />
     </>
   );
 }
-
 
 function App() {
   return (
