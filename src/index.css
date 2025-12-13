@@ -212,3 +212,16 @@ code {
   font-weight: 600;
   margin-left: 8px;
 }
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+.page-wrapper {
+  min-height: calc(100vh - 70px); /* navbar height */
+  display: flex;
+  flex-direction: column;
+}
