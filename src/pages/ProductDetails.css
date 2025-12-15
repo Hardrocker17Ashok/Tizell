@@ -182,3 +182,18 @@
     flex-direction: column;
   }
 }
+
+.pd-right {
+  flex: 1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 8px;
+  background: #fff;
+  height: fit-content;
+}
+
+/* sticky applied AFTER load */
+.pd-right.sticky {
+  position: sticky;
+  top: 20px;
+}

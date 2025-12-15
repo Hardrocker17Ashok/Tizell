@@ -150,3 +150,15 @@
   color: #1a73e8;
   transform: translateX(3px);
 }
+
+.profile-header {
+  overflow: hidden;
+}
+
+.profile-header p,
+.profile-header span,
+.profile-support p {
+  word-break: break-all;      
+  overflow-wrap: anywhere;   
+  white-space: normal;
+}

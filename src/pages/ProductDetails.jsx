@@ -8,6 +8,7 @@ const ProductDetails = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const product = state?.product;
+  const [enableSticky, setEnableSticky] = useState(false);
 
   const [selectedVariant, setSelectedVariant] = useState(
     product?.variants?.[0] || null
@@ -19,7 +20,9 @@ const ProductDetails = () => {
 
   
   useEffect(() => {
-    window.scrollTo(0, 0);
+    document.activeElement?.blur();
+     const t = setTimeout(() => setEnableSticky(true), 50);
+    return () => clearTimeout(t);
   }, []);
 
   if (!product) return <h2 className="pd-error">Product not found.</h2>;
@@ -146,7 +149,8 @@ const ProductDetails = () => {
       </div>
 
       {/* RIGHT BUY BOX */}
-      <div className="pd-right">
+      <div className={`pd-right ${enableSticky ? "sticky" : ""}`}>
+
         <p className="pd-stock">In Stock</p>
 
         <div className="pd-delivery">

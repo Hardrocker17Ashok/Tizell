@@ -1,7 +1,15 @@
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate
+} from "react-router-dom";
+
+import { useLayoutEffect } from "react";
+
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer"; // ✅ ONLY NEW LINE
+import Footer from "./components/Footer";
 
 // USER PAGES
 import Home from "./pages/Home";
@@ -29,9 +37,16 @@ import DashBoard from "./admin/DashBoard";
 import AdminOrders from "./admin/Orders";
 import Customers from "./admin/Customers";
 import AdminNotifications from "./admin/AdminNotifications";
+
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
+
+  // ✅ ONLY ONE SCROLL LOGIC (GLOBAL & SAFE)
+  useLayoutEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname]);
 
   const hideNavbarOn = [
     "/verify",
@@ -49,22 +64,14 @@ function Layout() {
 
   const hideNavbar = hideNavbarOn.includes(location.pathname);
 
-  // SECRET ADMIN ACCESS FIX
-  useEffect(() => {
-    if (location.search.includes("admin")) {
-      navigate("/admin/login", { replace: true });
-    }
-  }, [location, navigate]);
-
   return (
     <>
       {!hideNavbar && <Navbar />}
 
       <Routes>
-        {/* ADMIN LOGIN PAGE */}
+        {/* ADMIN */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-        {/* PROTECTED ADMIN ROUTES */}
         <Route
           path="/admin"
           element={
@@ -79,9 +86,7 @@ function Layout() {
           <Route path="notifications" element={<AdminNotifications />} />
         </Route>
 
-        {/* USER ROUTES */}
-        <Route path="/notifications" element={<Notifications />} />
-
+        {/* USER */}
         <Route path="/" element={<Home />} />
         <Route path="/product-details" element={<ProductDetails />} />
         <Route path="/cart" element={<Cart />} />
@@ -97,9 +102,9 @@ function Layout() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/order-success" element={<OrderSuccess />} />
         <Route path="/add-variants" element={<AddVariants />} />
+        <Route path="/notifications" element={<Notifications />} />
       </Routes>
 
-      {/* ✅ FOOTER ALWAYS VISIBLE (EVEN EMPTY PAGES) */}
       <Footer />
     </>
   );

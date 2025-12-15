@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
 
       {/* BOTTOM SECTION */}
       <div className="bottom-section">
-        
+
         {/* Offer Price */}
         <p className="offer-price">₹ {product.offerPrice}</p>
 
@@ -34,10 +34,12 @@ const ProductCard = ({ product }) => {
         <Link
           to="/product-details"
           state={{ product }}
+          preventScrollReset
           className="btn"
         >
           View Details
         </Link>
+
 
       </div>
 
