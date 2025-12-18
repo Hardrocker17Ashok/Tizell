@@ -17,7 +17,7 @@ import "./Checkout.css";
 
 const Checkout = () => {
   const navigate = useNavigate();
-  const { state } = useLocation(); 
+  const { state } = useLocation();
   const buyNowData = state?.buyNow ? state : null;
 
   const [cartItems, setCartItems] = useState([]);
@@ -36,95 +36,95 @@ const Checkout = () => {
 
   // LOAD SAVED ADDRESS -----------------------------------
   const loadSavedAddress = async () => {
-  if (!auth.currentUser) return;
+    if (!auth.currentUser) return;
 
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const snap = await getDoc(userRef);
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const snap = await getDoc(userRef);
 
-  if (snap.exists()) {
-    const data = snap.data();
+    if (snap.exists()) {
+      const data = snap.data();
 
-    const allAddresses = data.addresses || [];
+      const allAddresses = data.addresses || [];
 
-    // Find primary address
-    const primary = allAddresses.find((a) => a.isPrimary === true);
+      // Find primary address
+      const primary = allAddresses.find((a) => a.isPrimary === true);
 
-    // If no primary → pick first address
-    const selected = primary || allAddresses[0];
+      // If no primary → pick first address
+      const selected = primary || allAddresses[0];
 
-    if (selected) {
-      setUserInfo({
-        name: selected.name,
-        phone: selected.phone,
-        address: selected.address,
-        pincode: selected.pincode,
-        district: selected.district,
-        state: selected.state,
-      });
+      if (selected) {
+        setUserInfo({
+          name: selected.name,
+          phone: selected.phone,
+          address: selected.address,
+          pincode: selected.pincode,
+          district: selected.district,
+          state: selected.state,
+        });
+      }
     }
-  }
-};
+  };
 
 
   // PHONE VALIDATION -------------------------------------
- const validateIndianPhone = (phone) => {
-  phone = phone.trim();
+  const validateIndianPhone = (phone) => {
+    phone = phone.trim();
 
-  // 1. Must be exactly 10 digits
-  if (!/^[0-9]{10}$/.test(phone)) {
-    return { valid: false, reason: "Phone must be 10 digits." };
-  }
-
-  // 2. Must start with 6-9 (Indian mobile rule)
-  if (!/^[6-9]/.test(phone)) {
-    return { valid: false, reason: "Phone must start with 6, 7, 8, or 9." };
-  }
-
-  // 3. Reject all repeated digits (1111111111)
-  if (/^(.)\1{9}$/.test(phone)) {
-    return { valid: false, reason: "Repeated digits not allowed." };
-  }
-
-
-  const blacklist = [
-    "1234567890",
-    "0123456789",
-    "9876543210",
-    "0000000000",
-    "9999999999",
-    "8888888888",
-    "7777777777",
-    "6666666666"
-  ];
-
-  if (blacklist.includes(phone)) {
-    return { valid: false, reason: "This phone number looks fake." };
-  }
-
-
-  const ascending = "01234567890123456789";
-  if (ascending.includes(phone)) {
-    return { valid: false, reason: "Sequential numbers are invalid." };
-  }
-
-
-  const descending = "98765432109876543210";
-  if (descending.includes(phone)) {
-    return { valid: false, reason: "Reverse sequential numbers are invalid." };
-  }
-
-
-  const counts = {};
-  for (let digit of phone) {
-    counts[digit] = (counts[digit] || 0) + 1;
-    if (counts[digit] >= 6) {
-      return { valid: false, reason: "Too many repeated digits." };
+    // 1. Must be exactly 10 digits
+    if (!/^[0-9]{10}$/.test(phone)) {
+      return { valid: false, reason: "Phone must be 10 digits." };
     }
-  }
+
+    // 2. Must start with 6-9 (Indian mobile rule)
+    if (!/^[6-9]/.test(phone)) {
+      return { valid: false, reason: "Phone must start with 6, 7, 8, or 9." };
+    }
+
+    // 3. Reject all repeated digits (1111111111)
+    if (/^(.)\1{9}$/.test(phone)) {
+      return { valid: false, reason: "Repeated digits not allowed." };
+    }
 
 
-  return { valid: true, reason: "Valid Indian phone number." };
-};
+    const blacklist = [
+      "1234567890",
+      "0123456789",
+      "9876543210",
+      "0000000000",
+      "9999999999",
+      "8888888888",
+      "7777777777",
+      "6666666666"
+    ];
+
+    if (blacklist.includes(phone)) {
+      return { valid: false, reason: "This phone number looks fake." };
+    }
+
+
+    const ascending = "01234567890123456789";
+    if (ascending.includes(phone)) {
+      return { valid: false, reason: "Sequential numbers are invalid." };
+    }
+
+
+    const descending = "98765432109876543210";
+    if (descending.includes(phone)) {
+      return { valid: false, reason: "Reverse sequential numbers are invalid." };
+    }
+
+
+    const counts = {};
+    for (let digit of phone) {
+      counts[digit] = (counts[digit] || 0) + 1;
+      if (counts[digit] >= 6) {
+        return { valid: false, reason: "Too many repeated digits." };
+      }
+    }
+
+
+    return { valid: true, reason: "Valid Indian phone number." };
+  };
 
 
   // PINCODE LOOKUP ---------------------------------------
@@ -192,15 +192,21 @@ const Checkout = () => {
   // ---------------- TOTAL ----------------
   const itemsToShow = buyNowData
     ? [
-        {
-          cartId: "buynow",
-          productName: buyNowData.product.name,
-          image: buyNowData.product.image,
-          variant: buyNowData.variant,
-          quantity: buyNowData.quantity,
-        },
-      ]
+      {
+        cartId: "buynow",
+        productName: buyNowData.product.name,
+        image: buyNowData.product.image,
+        variant: buyNowData.variant,
+        quantity: buyNowData.quantity,
+      },
+    ]
     : cartItems;
+
+  console.log("CHECKOUT ITEMS =>", itemsToShow.map(i => ({
+    name: i.productName,
+    cartId: i.cartId,
+    productDocId: i.productDocId
+  })));
 
   const total = itemsToShow.reduce(
     (sum, item) =>
@@ -240,40 +246,40 @@ const Checkout = () => {
 
   // SAVE ADDRESS -----------------------------------------
   const saveCheckoutAddressToArray = async () => {
-  if (!auth.currentUser) return;
+    if (!auth.currentUser) return;
 
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const snap = await getDoc(userRef);
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const snap = await getDoc(userRef);
 
-  let existing = snap.exists() ? snap.data().addresses || [] : [];
+    let existing = snap.exists() ? snap.data().addresses || [] : [];
 
-  // Create unique id
-  const id = crypto.randomUUID();
+    // Create unique id
+    const id = crypto.randomUUID();
 
-  // If no address exists → make this primary
-  const isPrimary = existing.length === 0 ? true : false;
+    // If no address exists → make this primary
+    const isPrimary = existing.length === 0 ? true : false;
 
-  // Create new address object
-  const newAddr = {
-    ...userInfo,
-    id,
-    isPrimary,
+    // Create new address object
+    const newAddr = {
+      ...userInfo,
+      id,
+      isPrimary,
+    };
+
+    let updated = [...existing, newAddr];
+
+    // If first address, move it to top as primary
+    if (isPrimary) {
+      updated = [newAddr, ...existing.map(a => ({ ...a, isPrimary: false }))];
+    }
+
+    // Save to Firestore
+    await setDoc(
+      userRef,
+      { addresses: updated },
+      { merge: true }
+    );
   };
-
-  let updated = [...existing, newAddr];
-
-  // If first address, move it to top as primary
-  if (isPrimary) {
-    updated = [newAddr, ...existing.map(a => ({ ...a, isPrimary: false }))];
-  }
-
-  // Save to Firestore
-  await setDoc(
-    userRef,
-    { addresses: updated },
-    { merge: true }
-  );
-};
 
 
 
@@ -291,7 +297,7 @@ const Checkout = () => {
       return alert("Enter valid 6-digit pincode");
 
     await saveCheckoutAddressToArray();
-    
+
 
     navigate("/payment", {
       state: { cartItems: itemsToShow, total, userInfo },
@@ -304,7 +310,7 @@ const Checkout = () => {
       <h2 className="checkout-title">Checkout</h2>
 
       <div className="checkout-wrapper">
-        
+
         {/* LEFT SUMMARY */}
         <div className="summary-box">
           <h3>Order Summary</h3>

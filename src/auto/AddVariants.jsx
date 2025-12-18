@@ -2,29 +2,30 @@ import { useEffect } from "react";
 import { db } from "../firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
-const AddDeliveryText = () => {
+const AddProductRatings = () => {
 
   useEffect(() => {
-    const updateDelivery = async () => {
+    const updateRatings = async () => {
       const snap = await getDocs(collection(db, "products"));
 
       for (let d of snap.docs) {
         await updateDoc(doc(db, "products", d.id), {
-          deliveryText: "🚚 Free Delivery"
+          ratingAvg: 0,
+          ratingCount: 0
         });
       }
 
-      alert("🚚 Free Delivery text added to all products!");
+      alert("⭐ Rating fields added to all products!");
     };
 
-    updateDelivery();
+    updateRatings();
   }, []);
 
   return (
     <h2 style={{ padding: 20 }}>
-      Updating all products with Free Delivery...
+      Adding rating fields to all products...
     </h2>
   );
 };
 
-export default AddDeliveryText;
+export default AddProductRatings;

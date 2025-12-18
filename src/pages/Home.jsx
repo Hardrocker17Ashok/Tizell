@@ -27,9 +27,10 @@ const Home = () => {
       try {
         const snap = await getDocs(collection(db, "products"));
         const list = snap.docs.map((doc) => ({
-          id: doc.id,
+          docId: doc.id,
           ...doc.data(),
         }));
+
         setProducts(list);
       } catch (err) {
         console.error("Error fetching products:", err);

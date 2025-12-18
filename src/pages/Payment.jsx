@@ -35,7 +35,18 @@ const Payment = () => {
     //  REQUIRED ORDER STRUCTURE WITH "status"
     const orderData = {
       userId: auth.currentUser.uid,
-      items: state.cartItems,
+      // items: state.cartItems,
+      items: state.cartItems.map((item) => {
+        const cleanItem = { ...item };
+
+        // ✅ add productDocId ONLY if it exists
+        if (item.productDocId || item.docId || item.firestoreId) {
+          cleanItem.productDocId =
+            item.productDocId || item.docId || item.firestoreId;
+        }
+
+        return cleanItem;
+      }),
       total: isCOD ? total + DELIVERY_CHARGE : total,
       address: state.userInfo,
       paymentMethod,
@@ -52,7 +63,7 @@ const Payment = () => {
         email: auth.currentUser.email,
         phone: state.userInfo.phone,
       },
-      { merge: true } 
+      { merge: true }
     );
 
 
@@ -75,8 +86,10 @@ const Payment = () => {
             ? "Cash on Delivery selected. Order placed!"
             : "Online Payment Successful!",
         orderId: orderRef.id,
+        items: state.cartItems,
       },
     });
+
   };
   return (
     <div className="payment-container">

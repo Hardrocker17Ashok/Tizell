@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import "./ProductCard.css";
+import StarRating from "../components/StarRating";
+
 
 const ProductCard = ({ product }) => {
   return (
@@ -19,6 +21,14 @@ const ProductCard = ({ product }) => {
         <p className="free-delivery">{product.deliveryText}</p>
       )}
 
+      <div className="product-rating">
+        <StarRating value={product.ratingAvg} />
+        <span style={{ fontSize: 13, color: "#555" }}>
+          ({product.ratingCount})
+        </span>
+      </div>
+
+
       {/* BOTTOM SECTION */}
       <div className="bottom-section">
 
@@ -31,14 +41,29 @@ const ProductCard = ({ product }) => {
         </p>
 
         {/* View Details Button */}
+        {/* <Link
+          to="/product-details"
+          state={{ product,docId: product.docId  }}
+          preventScrollReset
+          className="btn"
+        >
+          View Details
+        </Link> */}
+
         <Link
           to="/product-details"
-          state={{ product }}
+          state={{
+            product: {
+              ...product,
+              docId: product.docId, // ✅ INSIDE product
+            },
+          }}
           preventScrollReset
           className="btn"
         >
           View Details
         </Link>
+
 
 
       </div>

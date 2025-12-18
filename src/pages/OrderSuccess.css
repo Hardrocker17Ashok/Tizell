@@ -1,56 +1,205 @@
+/* ===============================
+   ORDER SUCCESS – PROFESSIONAL UI
+================================ */
+
 .os-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f3f4f6, #eef2ff);
   display: flex;
   justify-content: center;
-  padding-top: 40px;
+  align-items: center;
+  padding: 20px;
 }
 
 .os-box {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 28px 26px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
   text-align: center;
-  background: #fff;
-  padding: 40px;
-  border-radius: 12px;
-  max-width: 420px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
+/* Success Icon */
 .os-img {
-  width: 120px;
-  margin-bottom: 20px;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 12px;
 }
 
-.os-msg {
-  margin: 10px 0 20px 0;
-  font-size: 18px;
-  color: #333;
+/* Heading */
+.os-box h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 6px;
 }
+
+/* Message */
+.os-msg {
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 22px;
+}
+
+/* ===============================
+   ⭐ RATING SECTION
+================================ */
+
+.rating-section {
+  margin: 22px 0;
+  padding: 18px;
+  background: #f9fafb;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.rating-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 14px;
+}
+
+/* Each product rating row */
+.rating-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 14px;
+  background: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+
+.rating-item:last-child {
+  margin-bottom: 0;
+}
+
+.rating-item:hover {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+/* Left content */
+.rating-left {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+}
+
+.rating-product-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+
+.rating-subtext {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Right stars */
+.rating-right {
+  display: flex;
+  align-items: center;
+}
+
+/* ===============================
+   BUTTONS
+================================ */
 
 .os-btn {
   width: 100%;
-  padding: 14px;
-  background: #111;
-  color: #fff;
-  font-size: 17px;
+  padding: 12px;
+  margin-top: 16px;
+  border-radius: 12px;
   border: none;
-  border-radius: 7px;
-  margin-bottom: 12px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .os-btn:hover {
-  background: #ff9900;
-  color: #000;
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  transform: translateY(-1px);
 }
 
 .os-back {
   width: 100%;
-  padding: 12px;
-  background: #eee;
-  font-size: 16px;
+  margin-top: 10px;
+  padding: 11px;
+  border-radius: 12px;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 500;
   border: none;
-  border-radius: 7px;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .os-back:hover {
-  background: #ddd;
+  background: #e5e7eb;
+}
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================ */
+
+@media (max-width: 600px) {
+  .os-box {
+    padding: 22px 18px;
+  }
+
+  .rating-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .rating-left {
+    max-width: 100%;
+  }
+}
+.rated-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #16a34a;
+}
+
+/* ⭐ FIX STAR CLICK ISSUE */
+.rating-section {
+  position: relative;
+  z-index: 10;
+}
+
+.rating-item {
+  position: relative;
+  z-index: 20;
+}
+
+.rating-right {
+  position: relative;
+  z-index: 30;
+}
+
+.rating-right svg {
+  pointer-events: auto !important;
+  cursor: pointer;
+  z-index: 999;
+}
+
+/* safety for any overlay */
+.os-box::before,
+.os-box::after {
+  pointer-events: none !important;
 }

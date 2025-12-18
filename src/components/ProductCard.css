@@ -95,3 +95,11 @@
     height: 120px;   /* chimney safe */
   }
 }
+
+.product-rating {
+  display: flex;
+  justify-content: center;   /* ⭐ CENTER */
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
