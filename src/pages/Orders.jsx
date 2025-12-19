@@ -9,6 +9,7 @@ import {
   where,
   getDocs,
   onSnapshot,
+  orderBy,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "./Orders.css";
@@ -22,7 +23,8 @@ const Orders = () => {
 
     const q = query(
       collection(db, "orders"),
-      where("userId", "==", auth.currentUser.uid)
+      where("userId", "==", auth.currentUser.uid),
+      // orderBy("createdAt", "desc")
     );
 
     const unsubscribe = onSnapshot(q, (snap) => {
@@ -137,6 +139,39 @@ const Orders = () => {
 
             </span>
           </p>
+
+          {/* -------- STATUS TIMELINE -------- */}
+          <div className="order-timeline">
+            {["Pending", "Shipped", "Out for Delivery", "Delivered"].map(
+              (step, index) => {
+                const steps = ["Pending", "Shipped", "Out for Delivery", "Delivered"];
+                const currentIndex = steps.indexOf(order.status);
+
+                let state = "upcoming";
+
+                if (order.status === "Cancelled") {
+                  state = "cancelled";
+                } else if (index < currentIndex) {
+                  state = "completed";
+                } else if (index === currentIndex) {
+                  state = "active";
+                }
+
+                return (
+                  <div className="timeline-step" key={step}>
+                    <div className={`timeline-circle ${state}`}></div>
+                    <p className={`timeline-text ${state}`}>{step}</p>
+
+                    {index < steps.length - 1 && (
+                      <div className={`timeline-bar ${state}`}></div>
+                    )}
+                  </div>
+                );
+              }
+            )}
+          </div>
+
+
 
           {/* -------- PAYMENT -------- */}
           <p>

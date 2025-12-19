@@ -26,7 +26,10 @@ export default function AdminLayout() {
         <Link to="/admin/dashboard" className="admin-link">Dashboard</Link>
         <Link to="/admin/notifications" className="admin-link">🔔 Notifications</Link>
         <Link to="/admin/orders" className="admin-link">Orders</Link>
+        <Link to="/admin/cancelled-orders">  Cancelled Orders</Link>
+
         <Link to="/admin/customers" className="admin-link">Customers</Link>
+
 
         <button className="admin-logout-btn" onClick={logout}>
           Logout

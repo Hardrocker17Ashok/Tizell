@@ -37,12 +37,13 @@ import DashBoard from "./admin/DashBoard";
 import AdminOrders from "./admin/Orders";
 import Customers from "./admin/Customers";
 import AdminNotifications from "./admin/AdminNotifications";
+import AdminCancelledOrders from "./admin/AdminCancelledOrders";
 
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // ✅ ONLY ONE SCROLL LOGIC (GLOBAL & SAFE)
+  // SCROLL TO TOP
   useLayoutEffect(() => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
@@ -58,55 +59,59 @@ function Layout() {
     "/admin/dashboard",
     "/admin/orders",
     "/admin/customers",
-    "/admin/settings",
-    "/admin/notifications"
+    "/admin/cancelled-orders",
+    "/admin/notifications",
   ];
 
   const hideNavbar = hideNavbarOn.includes(location.pathname);
 
   return (
-    <>
+    <div className="app-wrapper">   
+
       {!hideNavbar && <Navbar />}
 
-      <Routes>
-        {/* ADMIN */}
-        <Route path="/admin/login" element={<AdminLogin />} />
+      <main className="app-content">
+        <Routes>
+          {/* ADMIN */}
+          <Route path="/admin/login" element={<AdminLogin />} />
 
-        <Route
-          path="/admin"
-          element={
-            <ProtectedAdminRoute>
-              <AdminLayout />
-            </ProtectedAdminRoute>
-          }
-        >
-          <Route path="dashboard" element={<DashBoard />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="customers" element={<Customers />} />
-          <Route path="notifications" element={<AdminNotifications />} />
-        </Route>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedAdminRoute>
+                <AdminLayout />
+              </ProtectedAdminRoute>
+            }
+          >
+            <Route path="dashboard" element={<DashBoard />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="cancelled-orders" element={<AdminCancelledOrders />} />
+            <Route path="customers" element={<Customers />} />
+            <Route path="notifications" element={<AdminNotifications />} />
+          </Route>
 
-        {/* USER */}
-        <Route path="/" element={<Home />} />
-        <Route path="/product-details" element={<ProductDetails />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/orders" element={<UserOrders />} />
-        <Route path="/verified" element={<Verified />} />
-        <Route path="/forgot" element={<Forgot />} />
-        <Route path="/reset" element={<Reset />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/addresses" element={<AddressPage />} />
-        <Route path="/payment" element={<Payment />} />
-        <Route path="/order-success" element={<OrderSuccess />} />
-        <Route path="/add-variants" element={<AddVariants />} />
-        <Route path="/notifications" element={<Notifications />} />
-      </Routes>
+          {/* USER */}
+          <Route path="/" element={<Home />} />
+          <Route path="/product-details" element={<ProductDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/orders" element={<UserOrders />} />
+          <Route path="/verified" element={<Verified />} />
+          <Route path="/forgot" element={<Forgot />} />
+          <Route path="/reset" element={<Reset />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/addresses" element={<AddressPage />} />
+          <Route path="/payment" element={<Payment />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/add-variants" element={<AddVariants />} />
+          <Route path="/notifications" element={<Notifications />} />
+        </Routes>
+      </main>
 
       <Footer />
-    </>
+    </div>
   );
 }
 

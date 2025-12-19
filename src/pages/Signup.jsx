@@ -21,7 +21,7 @@ const Signup = () => {
 
   // Strong password rule (letters + numbers only, min 6 chars)
   const strongPassword = (pwd) => {
-    return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(pwd);
+    return pwd && pwd.length >= 6;
   };
 
   const handleSignup = async () => {
@@ -42,7 +42,7 @@ const Signup = () => {
 
     if (!strongPassword(password)) {
       alert(
-        "Password must be at least 6 characters long and include both letters and numbers."
+        "Password must be at least 6 characters long"
       );
       return;
     }

@@ -39,7 +39,7 @@ const Payment = () => {
       items: state.cartItems.map((item) => {
         const cleanItem = { ...item };
 
-        // ✅ add productDocId ONLY if it exists
+
         if (item.productDocId || item.docId || item.firestoreId) {
           cleanItem.productDocId =
             item.productDocId || item.docId || item.firestoreId;
@@ -71,6 +71,15 @@ const Payment = () => {
     // SAVE ORDER
     const orderRef = await addDoc(collection(db, "orders"), orderData);
 
+    await addDoc(collection(db, "adminNotifications"), {
+      type: "NEW_ORDER",
+      orderId: orderRef.id,
+      userId: auth.currentUser.uid,
+      message: `🛒 New order placed: #${orderRef.id}`,
+      read: false,
+      createdAt: Date.now(),
+    });
+
     // REMOVE ITEMS FROM CART 
     for (let item of state.cartItems) {
       if (item.cartId !== "buynow") {
@@ -78,7 +87,7 @@ const Payment = () => {
       }
     }
 
-    // REDIRECT TO SUCCESS PAGE
+
     navigate("/order-success", {
       state: {
         message:

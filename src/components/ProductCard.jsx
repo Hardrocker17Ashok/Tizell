@@ -40,22 +40,12 @@ const ProductCard = ({ product }) => {
           <span className="discount"> {product.discountPercent}% OFF</span>
         </p>
 
-        {/* View Details Button */}
-        {/* <Link
-          to="/product-details"
-          state={{ product,docId: product.docId  }}
-          preventScrollReset
-          className="btn"
-        >
-          View Details
-        </Link> */}
-
         <Link
           to="/product-details"
           state={{
             product: {
               ...product,
-              docId: product.docId, // ✅ INSIDE product
+              docId: product.docId,
             },
           }}
           preventScrollReset

@@ -52,7 +52,7 @@ const ProductDetails = () => {
     if (!auth.currentUser) return navigate("/login");
 
     try {
-      // 1️⃣ Check if same product + same variant already exists
+      // Check if same product + same variant already exists
       const q = query(
         collection(db, "cart"),
         where("userId", "==", auth.currentUser.uid),
@@ -62,7 +62,6 @@ const ProductDetails = () => {
 
       const snap = await getDocs(q);
 
-      // 2️⃣ If exists → increase quantity
       if (!snap.empty) {
         const cartDoc = snap.docs[0];
         const currentQty = cartDoc.data().quantity || 1;
@@ -72,16 +71,9 @@ const ProductDetails = () => {
         });
 
       } else {
-        // 3️⃣ Else → add new item
-        console.log("ADD TO CART ITEM =>", {
-          name: product.name,
-          firestoreDocId: product.id,
-          productDocId: product.docId
-        });
 
         await addDoc(collection(db, "cart"), {
           userId: auth.currentUser.uid,
-          // productId: product.id,
           productDocId: product.docId,
           productName: product.name,
           variant: selectedVariant,
@@ -106,18 +98,18 @@ const ProductDetails = () => {
     }
 
     try {
-      // 1️⃣ Check if same product (Firestore docId) + variant already in cart
+
       const q = query(
         collection(db, "cart"),
         where("userId", "==", auth.currentUser.uid),
-        where("productDocId", "==", product.docId), // ✅ FIX
+        where("productDocId", "==", product.docId),
         where("variant.label", "==", selectedVariant.label)
       );
 
       const snap = await getDocs(q);
 
       if (!snap.empty) {
-        // 2️⃣ If exists → increase quantity
+
         const cartDoc = snap.docs[0];
         const qty = cartDoc.data().quantity || 1;
 
@@ -125,11 +117,10 @@ const ProductDetails = () => {
           quantity: qty + 1
         });
       } else {
-        // 3️⃣ Else → add fresh cart item (SAME STRUCTURE AS CART)
         await addDoc(collection(db, "cart"), {
           userId: auth.currentUser.uid,
-          productDocId: product.docId,      // ✅ FIX (MOST IMPORTANT)
-          productId: product.id,             // optional (keep if you want)
+          productDocId: product.docId,
+          productId: product.id,
           productName: product.name,
           variant: selectedVariant,
           offerPrice: selectedVariant.offerPrice,
@@ -140,7 +131,7 @@ const ProductDetails = () => {
         });
       }
 
-      // 4️⃣ Go to checkout normally
+
       navigate("/checkout");
 
     } catch (err) {

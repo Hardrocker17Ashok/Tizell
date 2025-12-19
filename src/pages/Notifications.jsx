@@ -89,7 +89,7 @@ const Notifications = () => {
                             className="notif-delete-btn"
                             onClick={() => deleteNote(note.id)}
                         >
-                            ❌
+                            🗑️
                         </button>
                     </div>
                 ))}

@@ -189,7 +189,6 @@ const Checkout = () => {
 
   if (loading) return null;
 
-  // ---------------- TOTAL ----------------
   const itemsToShow = buyNowData
     ? [
       {
@@ -202,19 +201,13 @@ const Checkout = () => {
     ]
     : cartItems;
 
-  console.log("CHECKOUT ITEMS =>", itemsToShow.map(i => ({
-    name: i.productName,
-    cartId: i.cartId,
-    productDocId: i.productDocId
-  })));
-
   const total = itemsToShow.reduce(
     (sum, item) =>
       sum + item.variant.offerPrice * (item.quantity || 1),
     0
   );
 
-  // REMOVE  ----------
+  // REMOVE  
   const removeItem = async (item) => {
     if (item.cartId === "buynow") return;
     await deleteDoc(doc(db, "cart", item.cartId));
@@ -244,7 +237,7 @@ const Checkout = () => {
     setCartItems([...cartItems]);
   };
 
-  // SAVE ADDRESS -----------------------------------------
+  // SAVE ADDRESS 
   const saveCheckoutAddressToArray = async () => {
     if (!auth.currentUser) return;
 
@@ -268,7 +261,7 @@ const Checkout = () => {
 
     let updated = [...existing, newAddr];
 
-    // If first address, move it to top as primary
+
     if (isPrimary) {
       updated = [newAddr, ...existing.map(a => ({ ...a, isPrimary: false }))];
     }
@@ -283,7 +276,7 @@ const Checkout = () => {
 
 
 
-  // PROCEED TO PAYMENT -----------------------------------
+  // PROCEED TO PAYMENT 
   const handleProceedToPayment = async () => {
     const { name, phone, address, pincode, district, state } = userInfo;
 
@@ -304,7 +297,7 @@ const Checkout = () => {
     });
   };
 
-  // ---------------- UI ----------------
+
   return (
     <div className="checkout-container">
       <h2 className="checkout-title">Checkout</h2>

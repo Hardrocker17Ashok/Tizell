@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, updateDoc, doc, addDoc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, addDoc, increment, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useLocation } from "react-router-dom";
 import "./Admin.css";
@@ -83,23 +83,39 @@ We're always here to help ❤️
   // UPDATE STATUS + NOTIFICATION
   // ------------------------------------------------------------
   const updateStatus = async (id, status, userId) => {
-    // 1. Update order
+    const order = orders.find(o => o.id === id);
+    if (!order) return;
+
+    // 1️⃣ Update order status
     await updateDoc(doc(db, "orders", id), { status });
 
-    // 2. Send notification
+    // 2️⃣ ✅ Revenue ONLY when Delivered
+    if (status === "Delivered") {
+      await setDoc(
+        doc(db, "adminStats", "revenue"),
+        {
+          totalRevenue: increment(order.total)
+        },
+        { merge: true }
+      );
+    }
+
+    // 3️⃣ Send notification
     await addDoc(collection(db, "notifications"), {
       userId,
       orderId: id,
       status,
       title: `Order ${status}`,
-      message: notificationMessage(orders.find(o => o.id === id), status),
+      message: notificationMessage(order, status),
       createdAt: Date.now(),
       read: false,
     });
 
-    alert("Status updated & notification sent!");
+    alert("Status updated successfully");
     loadOrders();
   };
+
+
 
   // ---------------------------------------------------------
   //  PRINT INVOICE + AUTO SHIPPED NOTIFICATION
