@@ -38,6 +38,9 @@ import AdminOrders from "./admin/Orders";
 import Customers from "./admin/Customers";
 import AdminNotifications from "./admin/AdminNotifications";
 import AdminCancelledOrders from "./admin/AdminCancelledOrders";
+import PaymentFailed from "./pages/PaymentFailed";
+
+
 
 function Layout() {
   const location = useLocation();
@@ -55,6 +58,8 @@ function Layout() {
     "/signup",
     "/forgot",
     "/reset",
+    "/order-success",
+    "/payment-failed",
     "/admin/login",
     "/admin/dashboard",
     "/admin/orders",
@@ -66,7 +71,7 @@ function Layout() {
   const hideNavbar = hideNavbarOn.includes(location.pathname);
 
   return (
-    <div className="app-wrapper">   
+    <div className="app-wrapper">
 
       {!hideNavbar && <Navbar />}
 
@@ -107,6 +112,9 @@ function Layout() {
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/add-variants" element={<AddVariants />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/payment-failed" element={<PaymentFailed />} />
+
+
         </Routes>
       </main>
 

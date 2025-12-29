@@ -122,3 +122,16 @@
 .pay-btn:hover {
   background: #3b73d9;
 }
+
+.payment-option.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cod-warning {
+  color: #e53935;
+  font-size: 13px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+

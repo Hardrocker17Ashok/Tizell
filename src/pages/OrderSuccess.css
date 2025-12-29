@@ -203,3 +203,10 @@
 .os-box::after {
   pointer-events: none !important;
 }
+.rated-box {
+  background: #f0fdf4;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #166534;
+  font-weight: 600;
+}
