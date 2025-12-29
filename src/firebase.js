@@ -3,7 +3,8 @@ import { getFirestore } from "firebase/firestore";
 import {
   getAuth,
   setPersistence,
-  browserSessionPersistence
+  // browserSessionPersistence
+  browserLocalPersistence
 } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
@@ -32,10 +33,19 @@ export const ADMIN_EMAIL = "admin@tizell.com";
 
 
 
-setPersistence(auth, browserSessionPersistence)
+// setPersistence(auth, browserSessionPersistence)
+//   .then(() => {
+//     console.log("🔒 Session-based login enabled (no auto-login on refresh)");
+//   })
+//   .catch((err) => {
+//     console.error("Persistence error:", err);
+//   });
+
+
+  setPersistence(auth, browserLocalPersistence)
   .then(() => {
-    console.log("🔒 Session-based login enabled (no auto-login on refresh)");
+    console.log("✅ Persistent login enabled");
   })
   .catch((err) => {
-    console.error("Persistence error:", err);
+    console.error("Auth persistence error:", err);
   });

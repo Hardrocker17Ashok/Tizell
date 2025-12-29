@@ -62,7 +62,7 @@ exports.paymentSuccess = functions.https.onRequest((req, res) => {
 
     cartSnap.forEach(d => d.ref.delete());
 
-    res.redirect(`http://tizell.com/order-success?orderId=${txnid}`);
+    res.redirect(`https://tizell.com/order-success?orderId=${txnid}`);
   });
 });
 
@@ -73,6 +73,6 @@ exports.paymentFailure = functions.https.onRequest((req, res) => {
 
     await admin.firestore().collection("orders").doc(txnid).delete();
 
-    res.redirect(`http://tizell.com/payment-failed`);
+    res.redirect(`https://tizell.com/payment-failed`);
   });
 });
