@@ -5,7 +5,7 @@ const cors = require("cors")({ origin: true });
 
 admin.initializeApp();
 
-// ================= CREATE PAYMENT =================
+
 exports.createPayUPayment = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     try {
@@ -41,7 +41,7 @@ exports.createPayUPayment = functions.https.onRequest((req, res) => {
   });
 });
 
-// ================= PAYMENT SUCCESS =================
+
 exports.paymentSuccess = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     const { txnid, udf1, amount } = req.body;
@@ -50,7 +50,6 @@ exports.paymentSuccess = functions.https.onRequest((req, res) => {
       paymentStatus: "SUCCESS",
       paymentMode: "ONLINE",
       amount,
-    //   items: JSON.parse(udf2 || "[]"),
       paidAt: new Date(),
     });
 
@@ -66,7 +65,6 @@ exports.paymentSuccess = functions.https.onRequest((req, res) => {
   });
 });
 
-// ================= PAYMENT FAILURE =================
 exports.paymentFailure = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
     const { txnid } = req.body;

@@ -54,7 +54,7 @@ const Signup = () => {
         password
       );
 
-      //  Save Name in Firebase Auth
+      
       await updateProfile(userCredential.user, {
         displayName: name,
       });

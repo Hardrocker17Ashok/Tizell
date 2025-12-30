@@ -46,7 +46,7 @@ const Orders = () => {
 
     if (!confirm) return;
 
-    // ❌ Block cancellation if already delivered / out for delivery
+    //  Block cancellation if already delivered / out for delivery
     if (
       order.status === "Delivered" ||
       order.status === "Out for Delivery"
@@ -55,12 +55,12 @@ const Orders = () => {
       return;
     }
 
-    // 1️⃣ Update order status
+    // 1️ Update order status
     await updateDoc(doc(db, "orders", order.id), {
       status: "Cancelled",
     });
 
-    // 2️⃣ Notify customer
+    // 2️ Notify customer
     await addDoc(collection(db, "notifications"), {
       userId: order.userId,
       title: "❌ Order Cancelled",
@@ -69,7 +69,7 @@ const Orders = () => {
       createdAt: Date.now(),
     });
 
-    // 3️⃣ Notify admin
+    // 3️ Notify admin
     await addDoc(collection(db, "adminNotifications"), {
       type: "ORDER_CANCELLED",
       orderId: order.id,
@@ -91,7 +91,7 @@ const Orders = () => {
 
       {orders.map((order) => (
         <div className="order-card" key={order.id}>
-          {/* -------- ORDER HEADER -------- */}
+          
           <div className="order-header">
             <div>
               <p>
@@ -117,7 +117,7 @@ const Orders = () => {
             </div>
           </div>
 
-          {/* -------- STATUS -------- */}
+          {/*  STATUS */}
           <p>
             <b>Status:</b>{" "}
             <span
@@ -140,7 +140,7 @@ const Orders = () => {
             </span>
           </p>
 
-          {/* -------- STATUS TIMELINE -------- */}
+          {/* STATUS TIMELINE  */}
           <div className="order-timeline">
             {["Pending", "Shipped", "Out for Delivery", "Delivered"].map(
               (step, index) => {
@@ -173,7 +173,7 @@ const Orders = () => {
 
 
 
-          {/* -------- PAYMENT -------- */}
+          {/* PAYMENT  */}
           <p>
             <b>Payment:</b>{" "}
             <span
@@ -183,7 +183,7 @@ const Orders = () => {
             </span>
           </p>
 
-          {/* -------- DELIVERY ADDRESS -------- */}
+          {/* DELIVERY ADDRESS  */}
           <div className="order-address">
             <h4>Delivery Address</h4>
 
@@ -200,7 +200,7 @@ const Orders = () => {
 
           <h4 style={{ marginTop: 15 }}>Items:</h4>
 
-          {/* -------- ORDER ITEMS -------- */}
+          {/* ORDER ITEMS */}
           {order.items.map((item, index) => (
             <div className="order-item" key={index}>
               <img

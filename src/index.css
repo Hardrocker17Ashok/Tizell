@@ -221,7 +221,7 @@ body,
 }
 
 .page-wrapper {
-  min-height: calc(100vh - 70px); /* navbar height */
+  min-height: calc(100vh - 70px); 
   display: flex;
   flex-direction: column;
 }

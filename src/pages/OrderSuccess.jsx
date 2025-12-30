@@ -5,7 +5,7 @@
 // import { collection, addDoc, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
 // import "./OrderSuccess.css";
 
-// /* 🔒 Per-product isolated rating row */
+// /* Per-product isolated rating row */
 // const RatingRow = ({ item }) => {
 //   const [rated, setRated] = useState(0);
 
@@ -13,11 +13,11 @@
 //     if (!auth.currentUser) return;
 
 //     try {
-//       // 🔒 CHECK: already rated or not (DB LEVEL)
+//       //  CHECK: already rated or not (DB LEVEL)
 //       const q = query(
 //         collection(db, "ratings"),
 //         where("userId", "==", auth.currentUser.uid),
-//         where("productDocId", "==", item.productDocId) // ✅ FIX
+//         where("productDocId", "==", item.productDocId) 
 //       );
 
 //       const snap = await getDocs(q);
@@ -31,7 +31,7 @@
 //       const updateProductRating = async (productDocId) => {
 //         const q = query(
 //           collection(db, "ratings"),
-//           where("productDocId", "==", productDocId) // ✅ FIX
+//           where("productDocId", "==", productDocId) 
 //         );
 
 //         const snap = await getDocs(q);
@@ -43,16 +43,16 @@
 
 //         const avg = snap.size ? total / snap.size : 0;
 
-//         await updateDoc(doc(db, "products", productDocId), { // ✅ FIX
+//         await updateDoc(doc(db, "products", productDocId), { 
 //           ratingAvg: Number(avg.toFixed(1)),
 //           ratingCount: snap.size
 //         });
 //       };
 
-//       // ✅ SAVE NEW RATING
+//       //  SAVE NEW RATING
 //       await addDoc(collection(db, "ratings"), {
 //         userId: auth.currentUser.uid,
-//         productDocId: item.productDocId, // ✅ FIX
+//         productDocId: item.productDocId, 
 //         productName: item.productName || item.name,
 //         stars,
 //         createdAt: Date.now()
@@ -61,7 +61,7 @@
 //       setRated(stars);
 //       alert(`Thanks for ${stars} ⭐ rating`);
 
-//       await updateProductRating(item.productDocId); // ✅ FIX
+//       await updateProductRating(item.productDocId); 
 
 //     } catch (err) {
 //       console.error("Rating error:", err);
@@ -167,7 +167,7 @@ const RatingRow = ({ item }) => {
 
     const snap = await getDocs(q);
 
-    // ✅ Already rated
+    //  Already rated
     if (!snap.empty) {
       const existing = snap.docs[0].data().stars;
       setRated(existing);
@@ -175,7 +175,7 @@ const RatingRow = ({ item }) => {
       return;
     }
 
-    // ✅ Save rating
+    //  Save rating
     await addDoc(collection(db, "ratings"), {
       userId: auth.currentUser.uid,
       productDocId: item.productDocId,

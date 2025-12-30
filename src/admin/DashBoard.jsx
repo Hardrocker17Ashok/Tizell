@@ -19,7 +19,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
-  // 🔹 ORDERS LISTENER (same as before)
+  //  ORDERS LISTENER (same as before)
   useEffect(() => {
     const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
 
@@ -46,7 +46,7 @@ const Dashboard = () => {
     return () => unsub();
   }, []);
 
-  // 🔹 REVENUE LISTENER (NEW & CORRECT)
+  //  REVENUE LISTENER (NEW & CORRECT)
   useEffect(() => {
     const unsub = onSnapshot(
       doc(db, "adminStats", "revenue"),

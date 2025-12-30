@@ -26,7 +26,7 @@ export const db = getFirestore(app);
 // Auth instance
 export const auth = getAuth(app);
 
-// Storage instance (FOR PRODUCT IMAGES)
+// Storage instance 
 export const storage = getStorage(app);
 
 export const ADMIN_EMAIL = "admin@tizell.com";

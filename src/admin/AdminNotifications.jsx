@@ -29,14 +29,14 @@ const AdminNotifications = () => {
     return () => unsub();
   }, []);
 
-  // ✅ MARK AS READ
+  //  MARK AS READ
   const markAsRead = async (id) => {
     await updateDoc(doc(db, "adminNotifications", id), {
       read: true,
     });
   };
 
-  // ✅ DELETE NOTIFICATION (MISSING IN YOUR CODE)
+  //  DELETE NOTIFICATION (MISSING IN YOUR CODE)
   const deleteNotification = async (id) => {
     await deleteDoc(doc(db, "adminNotifications", id));
   };

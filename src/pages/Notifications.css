@@ -125,9 +125,7 @@
   justify-content: space-between;
 }
 
-/* ===========================
-   SWIPE TO DELETE (MOBILE)
-=========================== */
+
 
 @media (max-width: 768px) {
   .notif-card {

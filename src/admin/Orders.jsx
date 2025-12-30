@@ -21,9 +21,6 @@ export default function Orders() {
     setOrders(list);
   };
 
-  // ------------------------------------------------------------
-  // 🔔 PROFESSIONAL NOTIFICATION GENERATOR
-  // ------------------------------------------------------------
   const notificationMessage = (order, status) => {
     const item = order.items[0];
 
@@ -79,17 +76,15 @@ We're always here to help ❤️
     return templates[status] || "Your order has been updated.";
   };
 
-  // ------------------------------------------------------------
-  // UPDATE STATUS + NOTIFICATION
-  // ------------------------------------------------------------
+
   const updateStatus = async (id, status, userId) => {
     const order = orders.find(o => o.id === id);
     if (!order) return;
 
-    // 1️⃣ Update order status
+    // 1️ Update order status
     await updateDoc(doc(db, "orders", id), { status });
 
-    // 2️⃣ ✅ Revenue ONLY when Delivered
+    // 2 Revenue ONLY when Delivered
     if (status === "Delivered") {
       await setDoc(
         doc(db, "adminStats", "revenue"),
@@ -100,7 +95,7 @@ We're always here to help ❤️
       );
     }
 
-    // 3️⃣ Send notification
+    // 3️ Send notification
     await addDoc(collection(db, "notifications"), {
       userId,
       orderId: id,
@@ -117,9 +112,6 @@ We're always here to help ❤️
 
 
 
-  // ---------------------------------------------------------
-  //  PRINT INVOICE + AUTO SHIPPED NOTIFICATION
-  // ---------------------------------------------------------
   const handlePrint = async (order) => {
     const win = window.open("", "PRINT", "height=650,width=900");
 
@@ -235,9 +227,6 @@ We're always here to help ❤️
     loadOrders();
   }, [filter]);
 
-  // ------------------------------------------------------------
-  // UI
-  // ------------------------------------------------------------
   return (
     <div className="admin-orders-container">
       <h2 className="admin-title">

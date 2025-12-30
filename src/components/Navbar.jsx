@@ -40,7 +40,7 @@ const Navbar = () => {
     return () => document.removeEventListener("click", closeProfile);
   }, []);
 
-  // ✅ AUTH LISTENER (UNCHANGED)
+  //  AUTH LISTENER (UNCHANGED)
   useEffect(() => {
     return onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -48,7 +48,7 @@ const Navbar = () => {
     });
   }, []);
 
-  // ✅ FIXED NOTIFICATION LISTENER
+  //  FIXED NOTIFICATION LISTENER
   useEffect(() => {
     if (!user) {
       setUnread(0);
@@ -66,7 +66,7 @@ const Navbar = () => {
     });
 
     return () => unsub();
-  }, [user]); // 🔥 THIS IS THE FIX
+  }, [user]); 
 
   // CART LISTENER
   useEffect(() => {

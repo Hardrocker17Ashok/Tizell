@@ -15,9 +15,7 @@ const Payment = () => {
   const DELIVERY_CHARGE = 90;
   const isCOD = paymentMethod === "cod";
 
-  // ============================
-  // PAYU ONLINE PAYMENT (NEW BACKEND)
-  // ============================
+
   const startPayUPayment = async (amount) => {
     try {
       const finalAmount = Number(amount);
@@ -25,7 +23,7 @@ const Payment = () => {
 
       const orderId = "ORD" + Date.now();
 
-      // ✅ create order first
+      //  create order first
       await setDoc(doc(db, "orders", orderId), {
         orderId,
         userId: auth.currentUser.uid,
@@ -77,9 +75,9 @@ const Payment = () => {
 
 
 
-  // ============================
+
   // MAIN HANDLER
-  // ============================
+
   const handleProceed = async () => {
     if (!paymentMethod) {
       alert("Please select a payment method");
@@ -92,9 +90,8 @@ const Payment = () => {
       return;
     }
 
-    // ============================
     // CASH ON DELIVERY
-    // ============================
+
     const orderData = {
       userId: auth.currentUser.uid,
       items: state.cartItems.map((item) => {
@@ -150,9 +147,9 @@ const Payment = () => {
     });
   };
 
-  // ============================
+
   // UI
-  // ============================
+
   return (
     <div className="payment-container">
       <div className="payment-card">

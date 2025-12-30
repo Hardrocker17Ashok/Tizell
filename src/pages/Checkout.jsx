@@ -34,7 +34,7 @@ const Checkout = () => {
 
   const [loadingPin, setLoadingPin] = useState(false);
 
-  // LOAD SAVED ADDRESS -----------------------------------
+  // LOAD SAVED ADDRESS 
   const loadSavedAddress = async () => {
     if (!auth.currentUser) return;
 
@@ -66,7 +66,7 @@ const Checkout = () => {
   };
 
 
-  // PHONE VALIDATION -------------------------------------
+  // PHONE VALIDATION 
   const validateIndianPhone = (phone) => {
     phone = phone.trim();
 
@@ -127,7 +127,7 @@ const Checkout = () => {
   };
 
 
-  // PINCODE LOOKUP ---------------------------------------
+  // PINCODE LOOKUP
   const verifyPincode = async (pincode) => {
     if (pincode.length !== 6) return;
 
@@ -155,7 +155,7 @@ const Checkout = () => {
     }
   };
 
-  // WAIT FOR LOGIN ---------------------------------------
+  // WAIT FOR LOGIN 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
       setLoading(false);
@@ -165,7 +165,7 @@ const Checkout = () => {
     return () => unsub();
   }, [navigate]);
 
-  // FETCH CART  ----------------------
+  // FETCH CART  
   useEffect(() => {
     const fetchCart = async () => {
       if (!auth.currentUser || buyNowData) return;

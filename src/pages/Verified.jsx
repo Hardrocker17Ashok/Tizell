@@ -26,7 +26,7 @@ const VerifyAction = () => {
       return;
     }
 
-    // -------- VERIFY EMAIL --------
+    // VERIFY EMAIL
     if (mode === "verifyEmail") {
       checkActionCode(auth, oobCode)
         .then(() => applyActionCode(auth, oobCode))
@@ -42,7 +42,7 @@ const VerifyAction = () => {
       return;
     }
 
-    // -------- RESET PASSWORD --------
+    // RESET PASSWORD 
     if (mode === "resetPassword") {
       verifyPasswordResetCode(auth, oobCode)
         .then(() => {

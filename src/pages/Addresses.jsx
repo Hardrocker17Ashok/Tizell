@@ -21,9 +21,7 @@ const AddressPage = () => {
     isPrimary: false,
   });
 
-  // -------------------------------------------------------
-  //  LOAD ALL ADDRESSES FROM users/{uid}
-  // -------------------------------------------------------
+
   useEffect(() => {
     const fetchAddresses = async () => {
       if (!auth.currentUser) return;
@@ -39,9 +37,7 @@ const AddressPage = () => {
     fetchAddresses();
   }, []);
 
-  // -------------------------------------------------------
-  //  INDIAN PHONE VALIDATION
-  // -------------------------------------------------------
+
   const validatePhone = (phone) => {
     phone = phone.trim();
 
@@ -102,9 +98,7 @@ const AddressPage = () => {
   };
 
 
-  // -------------------------------------------------------
-  //  VERIFY PINCODE
-  // -------------------------------------------------------
+
   const verifyPincode = async (pincode) => {
     if (pincode.length !== 6) return;
 
@@ -136,35 +130,31 @@ const AddressPage = () => {
     }
   };
 
-  // -------------------------------------------------------
-  //  SET PRIMARY ADDRESS IN users/{uid}.addresses[]
-  // -------------------------------------------------------
+
   const setPrimaryAddress = async (id) => {
-  // Step 1: update flags
-  const updated = addresses.map((a) =>
-    a.id === id ? { ...a, isPrimary: true } : { ...a, isPrimary: false }
-  );
+    // Step 1: update flags
+    const updated = addresses.map((a) =>
+      a.id === id ? { ...a, isPrimary: true } : { ...a, isPrimary: false }
+    );
 
-  // Step 2: move primary to top
-  const primary = updated.find((a) => a.id === id);
-  const others = updated.filter((a) => a.id !== id);
-  const sorted = [primary, ...others];
+    // Step 2: move primary to top
+    const primary = updated.find((a) => a.id === id);
+    const others = updated.filter((a) => a.id !== id);
+    const sorted = [primary, ...others];
 
-  // Step 3: save sorted list in Firestore
-  await setDoc(
-    doc(db, "users", auth.currentUser.uid),
-    { addresses: sorted },
-    { merge: true }
-  );
+    // Step 3: save sorted list in Firestore
+    await setDoc(
+      doc(db, "users", auth.currentUser.uid),
+      { addresses: sorted },
+      { merge: true }
+    );
 
-  // Step 4: update UI
-  setAddresses(sorted);
-};
+    // Step 4: update UI
+    setAddresses(sorted);
+  };
 
 
-  // -------------------------------------------------------
-  //  DELETE ADDRESS FROM ARRAY
-  // -------------------------------------------------------
+
   const deleteAddress = async (id) => {
     const updated = addresses.filter((a) => a.id !== id);
 
@@ -177,9 +167,7 @@ const AddressPage = () => {
     setAddresses(updated);
   };
 
-  // -------------------------------------------------------
-  // SAVE ADDRESS → users/{uid}.addresses[]
-  // -------------------------------------------------------
+
   const saveAddress = async () => {
     const { name, phone, address, pincode, district, state } = newAddress;
 
@@ -202,7 +190,7 @@ const AddressPage = () => {
     );
 
     setAddresses(updated);
-  
+
 
     setNewAddress({
       name: "",
