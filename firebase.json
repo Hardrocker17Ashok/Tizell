@@ -5,23 +5,11 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+
   "functions": [
     {
-      "codebase": "default",
-      "disallowLegacyRuntimeConfig": true,
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ],
-      "source": "functions"
-    },
-    {
-      "source": "payu",
       "codebase": "payu",
-      "disallowLegacyRuntimeConfig": true,
+      "source": "payu",
       "ignore": [
         "node_modules",
         ".git",
@@ -30,5 +18,28 @@
         "*.local"
       ]
     }
-  ]
+  ],
+
+  "hosting": {
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/payment-success",
+        "destination": "/payment-success.html"
+      },
+      {
+        "source": "/payment-failed",
+        "destination": "/payment-failed.html"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }
