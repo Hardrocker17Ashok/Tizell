@@ -10,6 +10,8 @@ import { useLayoutEffect } from "react";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import PaymentProcessing from "./pages/PaymentProcessing";
+
 
 // USER PAGES
 import Home from "./pages/Home";
@@ -113,6 +115,8 @@ function Layout() {
           <Route path="/add-variants" element={<AddVariants />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/payment-failed" element={<PaymentFailed />} />
+          <Route path="/payment-processing" element={<PaymentProcessing />} />
+
 
 
         </Routes>
