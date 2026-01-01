@@ -4,8 +4,10 @@ import "./Payment.css";
 import { addDoc, collection, deleteDoc, setDoc, doc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import axios from "axios";
+import { useLoader } from "../context/LoaderContext";
 
 const Payment = () => {
+    const { setLoading } = useLoader();
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -16,8 +18,10 @@ const Payment = () => {
   const isCOD = paymentMethod === "cod";
 
 
+
   const startPayUPayment = async (amount) => {
     try {
+       setLoading(true);
       const finalAmount = Number(amount);
       if (!finalAmount || isNaN(finalAmount)) return;
 
@@ -69,8 +73,12 @@ const Payment = () => {
 
   
     } catch (err) {
+      setLoading(false);
       console.error("PAYMENT ERROR:", err);
       alert("Payment initiation failed");
+    }
+    finally {
+      setLoading(false); 
     }
   };
 

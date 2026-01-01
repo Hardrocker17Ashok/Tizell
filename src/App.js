@@ -8,10 +8,12 @@ import {
 
 import { useLayoutEffect } from "react";
 
+import { useLoader, LoaderProvider } from "./context/LoaderContext";
+import Loader from "./components/Loader";
+
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PaymentProcessing from "./pages/PaymentProcessing";
-
 
 // USER PAGES
 import Home from "./pages/Home";
@@ -42,13 +44,19 @@ import AdminNotifications from "./admin/AdminNotifications";
 import AdminCancelledOrders from "./admin/AdminCancelledOrders";
 import PaymentFailed from "./pages/PaymentFailed";
 
+import { useAuth } from "./context/AuthContext";
+
+
 
 
 function Layout() {
+
   const location = useLocation();
   const navigate = useNavigate();
+  const { loading } = useLoader();
 
   // SCROLL TO TOP
+
   useLayoutEffect(() => {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
@@ -74,6 +82,7 @@ function Layout() {
 
   return (
     <div className="app-wrapper">
+      {loading && <Loader />}
 
       {!hideNavbar && <Navbar />}
 
@@ -128,11 +137,31 @@ function Layout() {
 }
 
 function App() {
+  const { authLoading } = useAuth();
+
+  if (authLoading) {
+    return <Loader />;
+  }
+
   return (
-    <Router>
-      <Layout />
-    </Router>
+    <LoaderProvider>
+      <Router>
+        <Layout />
+      </Router>
+    </LoaderProvider>
   );
 }
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { useLoader } from "../context/LoaderContext";
 import BannerSlider from "../components/BannerSlider";
 import "./Home.css";
 
@@ -8,6 +9,7 @@ import { db, auth } from "../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 
 const Home = () => {
+  const { setLoading } = useLoader();
   const [products, setProducts] = useState([]);
   const [userName, setUserName] = useState("");
 
@@ -23,8 +25,10 @@ const Home = () => {
 
   //  FETCH PRODUCTS
   useEffect(() => {
+
     const fetchProducts = async () => {
       try {
+        setLoading(true);
         const snap = await getDocs(collection(db, "products"));
         const list = snap.docs.map((doc) => ({
           docId: doc.id,
@@ -33,8 +37,13 @@ const Home = () => {
 
         setProducts(list);
       } catch (err) {
+        setLoading(false);
         console.error("Error fetching products:", err);
       }
+      finally {
+      setLoading(false); 
+    }
+
     };
 
     fetchProducts();
