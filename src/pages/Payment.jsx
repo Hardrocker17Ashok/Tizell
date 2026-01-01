@@ -67,7 +67,7 @@ const Payment = () => {
       document.body.appendChild(form);
       form.submit();
 
-       window.location.replace(`/payment-processing?orderId=${orderId}`);
+  
     } catch (err) {
       console.error("PAYMENT ERROR:", err);
       alert("Payment initiation failed");
