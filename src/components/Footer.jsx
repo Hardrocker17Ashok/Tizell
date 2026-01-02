@@ -14,52 +14,71 @@ const Footer = () => {
 
         {/* SOCIAL ICONS */}
         <div className="social-row">
-          <span className="social-icon"><FaFacebookF /></span>
-          <span className="social-icon"><FaInstagram /></span>
-          <span className="social-icon"><FaWhatsapp /></span>
-          <span className="social-icon"><FaGoogle /></span>
-          <span className="social-icon"><FaYoutube /></span>
-        </div>
-
-        {/* POLICY LINKS (YOUR LINKS) */}
-        <div className="footer-nav">
           <a
-            href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/refund"
+            href="https://www.facebook.com/profile.php?id=61585945261642"
             target="_blank"
             rel="noreferrer"
+            className="social-icon"
           >
+            <FaFacebookF />
+          </a>
+
+          <a
+            href="https://www.instagram.com/tizellshoppingstore/"
+            target="_blank"
+            rel="noreferrer"
+            className="social-icon"
+          >
+            <FaInstagram />
+          </a>
+
+          <a
+            href="https://wa.me/message/FUDMEYYCY4ZHC1"
+            target="_blank"
+            rel="noreferrer"
+            className="social-icon"
+          >
+            <FaWhatsapp />
+          </a>
+
+          <a
+            href="https://www.google.com/search?q=Tizell"
+            target="_blank"
+            rel="noreferrer"
+            className="social-icon"
+          >
+            <FaGoogle />
+          </a>
+
+          <a
+            href="https://www.youtube.com/channel/UCCZF7G_gqKvFlOB5vVZzvjA"
+            target="_blank"
+            rel="noreferrer"
+            className="social-icon"
+          >
+            <FaYoutube />
+          </a>
+        </div>
+
+        {/* POLICY LINKS */}
+        <div className="footer-nav">
+          <a href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/refund" target="_blank" rel="noreferrer">
             Cancellation & Refund
           </a>
 
-          <a
-            href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/terms"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/terms" target="_blank" rel="noreferrer">
             Terms & Conditions
           </a>
 
-          <a
-            href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/shipping"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/shipping" target="_blank" rel="noreferrer">
             Shipping Policy
           </a>
 
-          <a
-            href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/privacy"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/privacy" target="_blank" rel="noreferrer">
             Privacy Policy
           </a>
 
-          <a
-            href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/contact_us"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href="https://merchant.razorpay.com/policy/RqCeum70ELwpPL/contact_us" target="_blank" rel="noreferrer">
             Contact Us
           </a>
         </div>
