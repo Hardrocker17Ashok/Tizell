@@ -7,16 +7,14 @@ import {
   collection,
   query,
   where,
-  getDocs,
   onSnapshot,
-  orderBy,
 } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "./Orders.css";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     if (!auth.currentUser) return;

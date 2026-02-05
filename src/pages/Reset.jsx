@@ -31,7 +31,7 @@ const Reset = () => {
         setStatus("ready");
       })
       .catch(() => setStatus("error"));
-  }, []);
+  }, [auth, oobCode]);
 
   const handleReset = async () => {
     if (newPass !== confirmPass) {

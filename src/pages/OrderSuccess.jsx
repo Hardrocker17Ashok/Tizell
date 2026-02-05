@@ -129,7 +129,7 @@ const OrderSuccess = () => {
     };
 
     loadOrder();
-  }, [state, orderId]);
+  }, [state, orderId,setLoading]);
 
   return (
     <div className="os-container">

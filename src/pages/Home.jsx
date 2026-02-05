@@ -47,7 +47,7 @@ const Home = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [setLoading]);
 
   //  SCROLL TO CATEGORY
   const scrollToSection = (id) => {
